@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>ThermoGuard AI — Whitepaper & Spesifikasi Teknis</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1F2937;
+    line-height: 1.65;
+    font-size: 10.5pt;
+    background: #ffffff;
+  }
+  h1 {
+    color: #111827;
+    font-size: 21pt;
+    font-weight: 800;
+    border-bottom: 3px solid #AF6EFF;
+    padding-bottom: 8px;
+    margin-top: 10px;
+    margin-bottom: 8px;
+  }
+  h2 {
+    color: #111827;
+    font-size: 14pt;
+    font-weight: 700;
+    border-bottom: 1.5px solid #E5E7EB;
+    padding-bottom: 4px;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    page-break-after: avoid;
+  }
+  h3 {
+    color: #4B1E6D;
+    font-size: 11.5pt;
+    font-weight: 700;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+  p {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+  ul, ol {
+    margin-left: 22px;
+    margin-bottom: 12px;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  th, td {
+    border: 1px solid #D1D5DB;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  th {
+    background-color: #F4EDFF;
+    color: #181A1A;
+    font-weight: 700;
+  }
+  tr:nth-child(even) {
+    background-color: #F9FAFB;
+  }
+  pre {
+    background-color: #181A1A;
+    color: #E5E7EB;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 8.5pt;
+    line-height: 1.4;
+    overflow-x: auto;
+    page-break-inside: avoid;
+  }
+  pre code {
+    background-color: transparent;
+    color: #A1E688;
+    padding: 0;
+  }
+  /* EQUATION CALLOUT BOX */
+  .equation-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #F8F9FC;
+    border-left: 4px solid #AF6EFF;
+    border-radius: 6px;
+    padding: 12px 18px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+  }
+  .equation-math {
+    flex: 1;
+    text-align: center;
+    font-size: 12pt;
+    color: #111827;
+  }
+  .equation-number {
+    font-size: 10pt;
+    font-weight: 600;
+    color: #6B7280;
+    font-family: "JetBrains Mono", monospace;
+    padding-left: 12px;
+  }
+  math {
+    font-family: "Cambria Math", "Latin Modern Math", serif;
+  }
+</style>
+</head>
+<body>
+<h1>KARYA TULIS ILMIAH &amp; PROPOSAL INOVASI TEKNOLOGI</h1>
+<h1>THERMOGUARD AI: REKAYASA SISTEM PENDINGIN DATA CENTER PROAKTIF BERBASIS SMART PDU POWER-FIRST SENSING, EKSPLOITASI INERSIA TERMAL, DAN ACTIVE VAV COLD AISLE CONTAINMENT DI IKLIM TROPIS INDONESIA</h1>
+<hr />
+<h2>ABSTRAK</h2>
+<p>Pertumbuhan beban komputasi kecerdasan buatan (<em>Artificial Intelligence</em>) di Indonesia memicu lonjakan densitas termal rak server hingga menembus 15–25 kW per rak. Sistem pendingin data center konvensional berbasis kontroler PID reaktif menghadapi kendala mendasar: keterlambatan deteksi sensor suhu udara lorong dingin (<em>air sensor lag</em>) dan jeda respon aktuator mekanis (<em>mechanical inertia</em>), yang berakibat pada pemborosan energi melalui <em>overcooling</em> ekstrem (11.5°C) serta risiko <em>thermal throttling</em>. Di sisi lain, pada ekosistem <em>multi-tenant colocation</em> di Indonesia, operator fasilitas terikat regulasi privasi yang melarang akses ke antrean sistem operasi (<em>job queue</em>) pelanggan. Karya tulis ini mengajukan <strong>ThermoGuard AI</strong>, sebuah arsitektur pendingin proaktif (<em>feedforward closed-loop</em>) yang memanfaatkan <strong>Smart PDU Power-First Sensing</strong> untuk mendeteksi penarikan daya listrik seketika (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>) secara 100% non-intrusif, mengeksploitasi <strong>jeda inersia termal alami</strong> sasis server selama 60–180 detik, dan mengarahkan aliran udara dingin presisi melalui <strong>Active VAV Perforated Floor Tiles</strong> di dalam lorong bersekat hermetis <strong>Cold Aisle Containment (CAC)</strong> standar Tier-IV. Berdasarkan pemodelan matematis termofluida terintegrasi dan simulasi fasilitas berkapasitas 1.0 MW IT Load pada tarif industri PLN Rp 1.300/kWh di iklim tropis (33°C, 80% RH), ThermoGuard AI berhasil menstabilkan suhu pasokan udara pada 15.0°C (sesuai standar ASHRAE TC 9.9), memangkas <em>Power Usage Effectiveness</em> (PUE) dari 1.45 menjadi 1.23, menghasilkan efisiensi energi pendinginan sebesar 32.9% atau penghematan operasional sebesar Rp 1,53 Miliar per tahun, serta mereduksi emisi karbon hingga 969 Ton <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math> per tahun.</p>
+<p><strong>Kata Kunci:</strong> <em>Data Center AI, Smart PDU Sensing, Inersia Termal, Cold Aisle Containment, Active VAV Tiles, PUE, Efisiensi Energi PLN.</em></p>
+<hr />
+<h2>ABSTRACT</h2>
+<p><em>The exponential growth of Artificial Intelligence (AI) compute workloads in Indonesia has escalated rack power densities to 15–25 kW per rack. Conventional data center cooling systems employing reactive PID controllers suffer from significant air-temperature sensing latency and mechanical response lags, causing severe energy inefficiency via overcooling (11.5°C) and heightened risk of server thermal throttling. Furthermore, in multi-tenant colocation facilities across Indonesia, stringent privacy mandates prohibit facility operators from inspecting internal tenant job queues. This paper proposes <strong>ThermoGuard AI</strong>, an advanced feedforward closed-loop cooling architecture that leverages <strong>Smart PDU Power-First Sensing</strong> for instant, 100% non-intrusive electrical surge detection (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>), exploits natural <strong>server chassis thermal inertia</strong> (60–180 seconds delay), and delivers targeted cooling via motorized <strong>Active VAV Perforated Floor Tiles</strong> within a Tier-IV compliant <strong>Cold Aisle Containment (CAC)</strong> enclosure. Based on rigorous thermofluid modeling and computational simulations for a 1.0 MW IT facility under Indonesian tropical ambient conditions (33°C, 80% RH) and PLN industrial electricity tariffs, ThermoGuard AI safely elevates supply air temperature to 15.0°C (ASHRAE TC 9.9 compliant), successfully reduces the facility Power Usage Effectiveness (PUE) from 1.45 to 1.23, cuts cooling power consumption by 32.9% (saving IDR 1.53 Billion annually), and mitigates carbon emissions by approximately 969 Metric Tons of <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math> per year.</em></p>
+<p><strong>Keywords:</strong> <em>AI Data Center, Smart PDU Sensing, Thermal Inertia, Cold Aisle Containment, VAV Floor Tiles, PUE, PLN Energy Efficiency.</em></p>
+<hr />
+<h2>BAB I. PENDAHULUAN</h2>
+<h3>1.1. Latar Belakang Masalah</h3>
+<p>Transformasi digital nasional dan adopsi model kecerdasan buatan berskala besar (<em>Large Language Models</em>, <em>Generative AI</em>, dan <em>Computer Vision</em>) telah memicu pembangunan mega-data center di koridor strategis Indonesia, khususnya kawasan industri Cikarang, Cibitung, Karawang, dan Batam. Pertumbuhan ini menuntut kepadatan daya listrik yang luar biasa. Jika rak server konvensional umumnya mengonsumsi daya 3 hingga 6 kW per rak, kluster komputasi AI modern berbasis GPU (seperti NVIDIA H100, L40S, maupun kluster inferensi kepadatan tinggi) mencapai densitas panas 15 kW hingga lebih dari 25 kW per rak.</p>
+<p>Di tengah iklim tropis Indonesia dengan suhu ambien rata-rata 32°C – 35°C dan kelembapan relatif tinggi (75% – 90% RH), sistem pendingin (<em>cooling infrastructure</em>) memikul beban kerja yang sangat berat. Pada fasilitas data center konvensional di Indonesia, sistem pendingin menghabiskan sekitar 35% hingga 42% dari total konsumsi listrik gedung, mencerminkan nilai <em>Power Usage Effectiveness</em> (PUE) yang masih bertengger di kisaran 1.45 hingga 1.60.</p>
+<h3>1.2. Identifikasi Masalah &amp; Keterbatasan Pendekatan Eksisting</h3>
+<ol>
+<li><strong>Kegagalan Sistem Pendingin Reaktif:</strong> Pengendali pendingin udara konvensional (<em>Computer Room Air Handler</em> / CRAH) mengandalkan sensor suhu udara yang diletakkan di depan rak. Karena udara memiliki kapasitas kalor volumetrik dan inersia perambatan, kenaikan suhu udara lorong baru terdeteksi 1 hingga 3 menit setelah GPU mulai bekerja. Akibatnya, CRAH merespons secara terlambat (<em>feedback delay</em>), memicu fenomena <em>thermal hunting</em> dan lonjakan suhu mendadak (<em>temperature spikes</em> hingga &gt;42°C).</li>
+<li><strong>Kompensasi Berlebih Melalui Over-Cooling:</strong> Untuk memitigasi bahaya <em>thermal spike</em> akibat keterlambatan respon, operator fasilitas terpaksa menyetel suhu pasokan udara (<em>supply air</em>) sangat rendah, yaitu pada 11°C – 12°C. Praktik <em>over-cooling</em> 24/7 ini membebani kompresor <em>chiller</em> dan menyebabkan pemborosan daya listrik bernilai miliaran rupiah setiap tahunnya.</li>
+<li><strong>Restriksi Privasi Tenant Colocation:</strong> Beberapa literatur akademis mengusulkan integrasi sistem pendingin dengan antrean penjadwalan tugas komputasi (<em>Job Scheduler Queue</em> seperti Slurm atau Kubernetes). Namun, pada realitas industri komersial di Indonesia (seperti DCI Indonesia, BDx, NeutraDC Telkom, dan NTT), lebih dari 85% fasilitas beroperasi sebagai <strong>Colocation Multi-Tenant</strong>. Berdasarkan regulasi kerahasiaan data, sertifikasi ISO/IEC 27001, dan kepatuhan SLA, pengelola fasilitas <strong>dilarang mutlak mengakses sistem operasi server milik pelanggan</strong>.</li>
+</ol>
+<h3>1.3. Rumusan Masalah</h3>
+<ol>
+<li>Bagaimana merancang mekanisme deteksi lonjakan panas komputasi AI yang instan dan proaktif tanpa melanggar batasan privasi data <em>tenant colocation</em>?</li>
+<li>Bagaimana memanfaatkan fenomena fisika inersia termal sasis server untuk melakukan tindakan mitigasi dini (<em>pre-cooling buffer</em>) sebelum udara lorong sempat memanas?</li>
+<li>Bagaimana merancang sistem distribusi udara dingin presisi berbasis <em>Cold Aisle Containment</em> (CAC) dan <em>Active Variable Air Volume (VAV) Floor Tiles</em> guna mencapai efisiensi energi optimal sesuai standar ASHRAE TC 9.9 di iklim tropis Indonesia?</li>
+</ol>
+<h3>1.4. Tujuan Penelitian &amp; Inovasi</h3>
+<ul>
+<li>Mengembangkan arsitektur <strong>ThermoGuard AI</strong>: sistem kendali pendingin proaktif (<em>feedforward closed-loop</em>) berbasis telemetri <strong>Smart PDU Power-First Sensing</strong> (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>).</li>
+<li>Menurunkan formulasi termodinamika perambatan panas diferensial sasis server dengan konstanta inersia <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mn>120</mn><mtext>&#x000A0;detik</mtext></mrow></math>.</li>
+<li>Merancang integrasi dinamis antara tekanan plenum bawah lantai (<em>raised floor</em>) dengan katup kisi lantai bermotor (<em>Active VAV Tiles</em>) yang merespons gradien daya <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mi>P</mi><mo>&#x0002F;</mo><mi>d</mi><mi>t</mi></mrow></math>.</li>
+<li>Menguji efisiensi tekno-ekonomi pada kapasitas 1.0 MW IT Load berdasarkan tarif listrik PLN Golongan Industri I-3/I-4 Rp 1.300/kWh.</li>
+</ul>
+<hr />
+<h2>BAB II. TINJAUAN PUSTAKA &amp; LANDASAN TEORI</h2>
+<h3>2.1. Standar Termal Lingkungan ASHRAE TC 9.9</h3>
+<p><em>American Society of Heating, Refrigerating and Air-Conditioning Engineers</em> (ASHRAE) Technical Committee 9.9 menetapkan pedoman lingkungan termal untuk pusat data kelas enterprise:
+* <strong>Recommended Envelope (Class A1):</strong> Suhu pasokan udara dingin (<em>dry-bulb temperature</em>) berada pada rentang <strong>18.0°C hingga 27.0°C</strong>.
+* <strong>Kelembapan Relatif (RH):</strong> Rentang aman non-kondensasi adalah <strong>50% hingga 60% RH</strong> dengan batas titik embun maksimum (<em>dew point</em>) sebesar <strong>15.0°C</strong>.
+Sistem ThermoGuard AI mengadopsi suhu pasokan presisi <strong>15.0°C – 18.0°C</strong> di plenum bawah lantai, memastikan bahwa udara yang menyentuh server berada dalam amplop rekomendasi ASHRAE sekaligus mengeliminasi risiko kondensasi air (<em>safe dew point</em> 5.2°C pada 52% RH ruangan).</p>
+<h3>2.2. Prinsip Pemisahan Aliran Udara: Cold Aisle Containment (CAC)</h3>
+<p>Dalam arsitektur data center Tier-3 dan Tier-4, fenomena <em>thermal bypass</em> (tercampurnya udara pasokan dingin dengan udara buangan panas) merupakan sumber inefisiensi termal terbesar. Sistem <em>Cold Aisle Containment</em> (CAC) mengisolasi lorong dingin menggunakan sekat dinding kaca laminasi dan pintu geser hermetis. Dengan menjaga lorong dingin pada tekanan statis positif (30–40 Pa), udara dingin dipaksa mengalir satu arah menembus sasis server dari bagian depan (<em>intake</em>) menuju bagian belakang (<em>exhaust</em>), mencegah kebocoran udara dingin ke lingkungan sekitar.</p>
+<h3>2.3. Konsep Physics-Informed Feedforward Control</h3>
+<p>Kontrol konvensional bekerja secara <em>feedback</em>:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mtext&gt;Error&lt;/mtext&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;setpoint&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;measured&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(1)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Sebaliknya, kontrol <em>feedforward</em> berbasis fisika mengantisipasi respon sistem dengan mengukur gangguan (<em>disturbance</em>) pada sumbernya sebelum variabel terkontrol terpengaruh:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mi&gt;u&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mtext&gt;Disturbance&lt;/mtext&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0002C;&lt;/mo&gt;&lt;mtext&gt;Physics&amp;#x000A0;Model&lt;/mtext&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(2)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Dalam ThermoGuard AI, gangguan utama adalah penarikan arus listrik GPU (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>IT</mtext></mrow></msub></mrow></math>). Dengan mengukur <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>IT</mtext></mrow></msub></mrow></math> di tingkat PDU, sistem aktuasi pendingin dapat digerakkan secara instan pada jendela jeda inersia termal.</p>
+<hr />
+<h2>BAB III. ARSITEKTUR SISTEM &amp; DESAIN REKAYASA</h2>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│               ARSITEKTUR LENGKAP SISTEM THERMOGUARD AI                 │
+│                                                                        │
+│   [ SENSOR FISIK NON-INTRUSIF ]                                        │
+│   ┌───────────────────────────┐                                        │
+│   │ Smart PDU Power Metering  │ ──(Daya Listrik kW @ t=0)──┐           │
+│   │ (Tiap Rak: V x I Sensor)  │                            │           │
+│   └───────────────────────────┘                            │           │
+│                                                            ▼           │
+│   [ THERMOGUARD AI REASONING CORE ]          ┌────────────────────────┐│
+│   ┌───────────────────────────────┐          │ 1. Gradient Estimator  ││
+│   │  PINN Differential Solver     │ ◄─────── │    (dP/dt Analysis)    ││
+│   │  (Inersia Termal 120 Detik)   │          └────────────────────────┘│
+│   └──────────────┬────────────────┘          ┌────────────────────────┐│
+│                  │                           │ 2. Predictive Horizon  ││
+│                  └─────────────────────────► │    (5 - 15 Menit)      ││
+│                                              └────────────────────────┘│
+│                                                            │           │
+│   [ TINGKAT AKTUASI MEKANIKAL (HVAC) ]                     ▼           │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │ • Active VAV Damper Actuators (Aperture: 0% - 100% per Rak)      │ │
+│   │ • Variable Frequency Drive (VFD Blower Kipas CRAH Modulasi)      │ │
+│   │ • Chilled Water Supply Lift Modulation (+3.5°C Efisiensi)        │ │
+│   └──────────────────────────────────────────────────────────────────┘ │
+│                                    │                                   │
+│                                    ▼                                   │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │       COLD AISLE CONTAINMENT (TIER-IV HERMETIC GLASS AISLE)      │ │
+│   │                                                                  │ │
+│   │   [Rak A1]       [Rak A2 (AI Node)]       [Rak A3 (AI Node)]     │ │
+│   │   Damper 40%         Damper 95%               Damper 95%         │ │
+│   │   (Standby)      (Pre-Cooling Active)     (Pre-Cooling Active)   │ │
+│   │       ▲                   ▲                        ▲             │ │
+│   │       └── Underfloor Plenum Positive Pressure (35 Pa Chilled Air)│ │
+│   └──────────────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3>3.1. Sub-Sistem 1: Smart PDU Power Telemetry</h3>
+<p>Setiap rak kabinet dilengkapi dengan unit distribusi daya pintar (<em>Smart Power Distribution Unit</em> / PDU). Sensor Hall-Effect dan pengukur tegangan mikroprosesor mengukur tegangan <em>Root Mean Square</em> (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>V</mi><mrow><mtext>rms</mtext></mrow></msub></mrow></math>) dan arus (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>I</mi><mrow><mtext>rms</mtext></mrow></msub></mrow></math>) pada frekuensi sampling 100 Hz, lalu mengirimkan telemetri daya rata-rata per detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>IT</mtext></mrow></msub></mrow></math> dalam kW) melalui protokol industri Modbus-TCP atau SNMPv3 ke server pengontrol fasilitas.</p>
+<h3>3.2. Sub-Sistem 2: Underfloor Plenum &amp; Active VAV Perforated Tiles</h3>
+<ul>
+<li><strong>Lantai Panggung Bertekanan:</strong> Ruang di bawah lantai panggung (<em>raised floor</em> setinggi 600 mm) berfungsi sebagai saluran udara dingin bertekanan positif seragam (35 Pa).</li>
+<li><strong>Kisi Lantai Bermotor:</strong> Di depan masing-masing dari 8 rak server dipasang ubin berpori berukuran <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>600</mn><mo>&#x000D7;</mo><mn>600</mn><mtext>&#x000A0;mm</mtext></mrow></math> yang dilengkapi bilah <em>damper</em> aerodinamis bermotor servo presisi tinggi. Bilah damper dapat membuka secara kontinu dari 0% (tertutup rapat) hingga 100% (bukaan penuh) dalam waktu transisi kurang dari 4.0 detik.</li>
+</ul>
+<h3>3.3. Sub-Sistem 3: Isolasi Kaca Hermetis Tier-IV</h3>
+<p>Dinding partisi kaca setebal 10 mm dengan rangka aluminium anodized menutup seluruh panjang lorong dingin selebar 1.200 mm. Di kedua ujung lorong terpasang pintu geser otomatis dengan segel karet elastis (<em>gasket seal</em>), menjamin tingkat kebocoran udara (<em>air leakage rate</em>) di bawah 1.5% pada tekanan diferensial 35 Pa.</p>
+<hr />
+<h2>BAB IV. PEMODELAN MATEMATIS, PENURUNAN RUMUS, &amp; FORMULASI TERMOFLUIDA</h2>
+<p>Pada bab ini dijabarkan seluruh formulasi fisika dan persamaan diferensial yang menjadi dasar komputasi algoritma ThermoGuard AI.</p>
+<hr />
+<h3>4.1. Persamaan (1): Pengukuran Daya Listrik Aktual Joule (Smart PDU Sensing)</h3>
+<p>Daya listrik nyata yang ditarik oleh perangkat server di dalam rak kabinet dihitung berdasarkan integrasi tegangan dan arus seketika:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;rms&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x000D7;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;I&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;rms&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x000D7;&lt;/mo&gt;&lt;mi&gt;cos&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;&amp;#x003D5;&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x000D7;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;1000&lt;/mn&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(3)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (1)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>IT</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Daya listrik aktif total rak server</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>6.5</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Idle) – <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>24.8</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Peak)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>V</mi><mrow><mtext>rms</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Tegangan efektif listrik bolak-balik</td>
+<td style="text-align: center;">Volt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>V</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>230</mn><mtext>&#x000A0;V</mtext></mrow></math> fasa-netral / <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>400</mn><mtext>&#x000A0;V</mtext></mrow></math> 3-fasa</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>I</mi><mrow><mtext>rms</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Arus listrik efektif total pada sirkuit rak</td>
+<td style="text-align: center;">Ampere (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>A</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>28.2</mn><mtext>&#x000A0;A</mtext></mrow></math> – <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>107.8</mn><mtext>&#x000A0;A</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>cos</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003D5;</mi><mo stretchy="false">&#x00029;</mo></mrow></math></td>
+<td style="text-align: left;">Faktor daya listrik (<em>Power Factor</em>) beban IT</td>
+<td style="text-align: center;">Tanpa satuan</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.98</mn></mrow></math> – <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.99</mn></mrow></math> (Beban Server Modern APFC)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.2. Persamaan (2): Persamaan Diferensial Inersia Termal Sasis Server</h3>
+<p>Berdasarkan Hukum Konservasi Energi Termal, daya listrik yang dikonsumsi komponen komputasi silikon (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>IT</mtext></mrow></msub></mrow></math>) tidak serta merta langsung memanaskan udara lorong. Kalor tersebut diserap terlebih dahulu oleh kapasitas panas massa tembaga pada <em>heatpipe</em>, <em>vapor chamber</em>, sirip aluminium heatsink, dan sasis logam:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;eff&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;eff&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x003C4;&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;thermal&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(4)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Bentuk solusi analitis persamaan diferensial di atas untuk lonjakan daya bertingkat (<em>step input surge</em>) dari <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mn>0</mn></msub></mrow></math> ke <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mn>1</mn></msub></mrow></math> pada <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math> adalah:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;eff&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msup&gt;&lt;mi&gt;e&lt;/mi&gt;&lt;mrow&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x003C4;&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;thermal&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(5)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (2)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Q</mi><mrow><mtext>eff</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Laju pelepasan kalor efektif ke udara lorong</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;">Dinamis (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>6.5</mn></mrow></math> – <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>24.8</mn><mtext>&#x000A0;kW</mtext></mrow></math>)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>IT</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Daya listrik yang dikonsumsi GPU pada saat <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi></mrow></math></td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>24.8</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Saat beban AI 95%)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C4;</mi><mrow><mtext>thermal</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Konstanta waktu inersia termal sasis server</td>
+<td style="text-align: center;">Detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>s</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>120.0</mn><mtext>&#x000A0;detik</mtext></mrow></math> (Empiris Kluster GPU 8U)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi></mrow></math></td>
+<td style="text-align: left;">Waktu operasional berjalan</td>
+<td style="text-align: center;">Detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>s</mtext></mrow></math>)</td>
+<td style="text-align: left;">Rentang waktu observasi</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.3. Persamaan (3): Perhitungan Jeda Waktu Kritis (Thermal Headroom Window)</h3>
+<p>AI menghitung sisa waktu aman sebelum kalor menyentuh udara lorong dingin untuk mengaktifkan pra-pendinginan:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mtext&gt;Headroom&lt;/mtext&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mo&gt;max&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;mo&gt;&amp;#x0002C;&lt;/mo&gt;&lt;mspace width="0.278em" /&gt;&lt;mspace width="0.278em" /&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x003C4;&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;base&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;mi&gt;&amp;#x00394;&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;surge&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(6)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (3)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>Headroom</mtext></mrow></math></td>
+<td style="text-align: left;">Jendela waktu inersia tersisa untuk aktuasi VAV</td>
+<td style="text-align: center;">Detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>s</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn></mrow></math> hingga <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>120</mn><mtext>&#x000A0;detik</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C4;</mi><mrow><mtext>base</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Konstanta waktu inersia termal dasar sasis</td>
+<td style="text-align: center;">Detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>s</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>120.0</mn><mtext>&#x000A0;detik</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00394;</mi><msub><mi>t</mi><mrow><mtext>surge</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Durasi waktu sejak lonjakan listrik pertama terdeteksi</td>
+<td style="text-align: center;">Detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>s</mtext></mrow></math>)</td>
+<td style="text-align: left;">Terhitung oleh timer sistem</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.4. Persamaan (4): Estimasi Gradien Kenaikan Daya Listrik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mi>P</mi><mo>&#x0002F;</mo><mi>d</mi><mi>t</mi></mrow></math>)</h3>
+<p>Tingkat kecuraman perubahan beban listrik dievaluasi secara kontinu untuk membedakan fluktuasi normal dengan lonjakan komputasi berat:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo&gt;&amp;#x02248;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;mi&gt;&amp;#x00394;&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;&amp;#x00394;&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(7)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (4)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mfrac><mrow><mi>d</mi><msub><mi>P</mi><mrow><mtext>IT</mtext></mrow></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac></mrow></math></td>
+<td style="text-align: left;">Laju perubahan daya listrik per satuan waktu</td>
+<td style="text-align: center;">Kilowatt per detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW/s</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.0</mn><mtext>&#x000A0;kW/s</mtext></mrow></math> (Stabil) s/d <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>3.8</mn><mtext>&#x000A0;kW/s</mtext></mrow></math> (Surge)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00394;</mi><mi>t</mi></mrow></math></td>
+<td style="text-align: left;">Interval waktu sampling diskrit data PDU</td>
+<td style="text-align: center;">Detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>s</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.1</mn><mtext>&#x000A0;detik</mtext></mrow></math> (Internal) / <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.0</mn><mtext>&#x000A0;s</mtext></mrow></math> (Logging)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.5. Persamaan (5): Proyeksi Beban Daya Horizon 5–15 Menit ke Depan</h3>
+<p>Menggunakan metode ekstrapolasi gradien berbobot saturasi, AI memproyeksikan lintasan daya pada horizon waktu ke depan (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>H</mi></mrow></math>):</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mrow&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x0005E;&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mtext&gt;forecast&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;mi&gt;H&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mo&gt;min&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;max&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0002C;&lt;/mo&gt;&lt;mspace width="0.278em" /&gt;&lt;mspace width="0.278em" /&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;mi&gt;&amp;#x003BA;&lt;/mi&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;[&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mi&gt;H&lt;/mi&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(8)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (5)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover accent="true"><mrow><mi>P</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mtext>forecast</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Nilai proyeksi daya listrik pada horizon masa depan</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;">Maksimum dibatasi pada <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>24.8</mn><mtext>&#x000A0;kW</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>max</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Kapasitas daya desain nominal maksimum rak kabinet</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>24.8</mn><mtext>&#x000A0;kW&#x000A0;per&#x000A0;rak</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BA;</mi></mrow></math></td>
+<td style="text-align: left;">Faktor redaman saturasi non-linier daya</td>
+<td style="text-align: center;">Tanpa satuan</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.85</mn></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>H</mi></mrow></math></td>
+<td style="text-align: left;">Horizon waktu proyeksi masa depan</td>
+<td style="text-align: center;">Detik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>s</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>300</mn><mtext>&#x000A0;s</mtext></mrow></math> (5 menit) hingga <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>900</mn><mtext>&#x000A0;s</mtext></mrow></math> (15 menit)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.6. Persamaan (6): Laju Pelepasan Kalor Konveksi Paksa Udara Sejuk (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Q</mi><mrow><mtext>cool</mtext></mrow></msub></mrow></math>)</h3>
+<p>Laju pendinginan kalor sensibel yang diekstraksi dari rak server oleh hembusan udara dingin ubin VAV dihitung melalui formulasi termofluid:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover&gt;&lt;mrow&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x002D9;&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mtext&gt;cool&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msub&gt;&lt;mover&gt;&lt;mrow&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x002D9;&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mtext&gt;air&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;rack&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;supply&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(9)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Dimana laju massa udara (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>m</mi></mrow><mo>&#x002D9;</mo></mover><mrow><mtext>air</mtext></mrow></msub></mrow></math>) merupakan fungsi dari bukaan damper ubin lantai (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C9;</mi><mrow><mtext>damper</mtext></mrow></msub></mrow></math>), rasio kecepatan kipas PWM, dan tekanan statis plenum bawah lantai:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover&gt;&lt;mrow&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x002D9;&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mtext&gt;cool&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;conv&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mtext&gt;PWM&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;fan&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;100&lt;/mn&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;1.15&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;rack&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;supply&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;[&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x003B2;&lt;/mi&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x003B2;&lt;/mi&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x003C9;&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;damper&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;100&lt;/mn&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;plenum&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;base&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(10)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (6)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>Q</mi></mrow><mo>&#x002D9;</mo></mover><mrow><mtext>cool</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Laju pelepasan kalor konveksi paksa dari sasis</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>8.0</mn></mrow></math> hingga <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>42.0</mn><mtext>&#x000A0;kW</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>k</mi><mrow><mtext>conv</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Koefisien konveksi termal efektif fasilitas</td>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW/K</mtext></mrow></math></td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2.10</mn><mtext>&#x000A0;kW/K</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mtext>PWM</mtext><mrow><mtext>fan</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Rasio modulasi modul kipas sasis server</td>
+<td style="text-align: center;">Persen (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00025;</mi></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>35</mn><mi>&#x00025;</mi></mrow></math> (Idle) s/d <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>85</mn><mi>&#x00025;</mi></mrow></math> (Surge)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mtext>rack</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Suhu udara aktual di dalam zona intake rak</td>
+<td style="text-align: center;">Derajat Celsius (°C)</td>
+<td style="text-align: left;">Target: <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>22.0</mn><mi>°</mi><mtext>C</mtext></mrow></math> – <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>24.0</mn><mi>°</mi><mtext>C</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mtext>supply</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Suhu udara sejuk pasokan dari bawah lantai</td>
+<td style="text-align: center;">Derajat Celsius (°C)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>15.0</mn><mi>°</mi><mtext>C</mtext></mrow></math> (Mode AI) vs <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>11.5</mn><mi>°</mi><mtext>C</mtext></mrow></math> (Mode Konvensional)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C9;</mi><mrow><mtext>damper</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Derajat bukaan katup VAV ubin lantai berpori</td>
+<td style="text-align: center;">Persen (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00025;</mi></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mi>&#x00025;</mi></mrow></math> (Tutup) s/d <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>100</mn><mi>&#x00025;</mi></mrow></math> (Buka Penuh)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>plenum</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Tekanan statis positif di bawah lantai panggung</td>
+<td style="text-align: center;">Pascal (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>Pa</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>35.0</mn><mtext>&#x000A0;Pa</mtext></mrow></math> (Nominal Seimbang)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B2;</mi><mn>0</mn></msub><mo>&#x0002C;</mo><msub><mi>&#x003B2;</mi><mn>1</mn></msub></mrow></math></td>
+<td style="text-align: left;">Koefisien aerodinamika hambatan kisi berpori</td>
+<td style="text-align: center;">Tanpa satuan</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B2;</mi><mn>0</mn></msub><mo>&#x0003D;</mo><mn>0.38</mn><mo>&#x0002C;</mo><mspace width="0.278em" /><msub><mi>&#x003B2;</mi><mn>1</mn></msub><mo>&#x0003D;</mo><mn>1.12</mn></mrow></math></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.7. Persamaan (7): Keseimbangan Kalor Netto (<em>Net Thermal Energy Flux</em>)</h3>
+<p>Dinamika perubahan suhu udara di sekitar zona rak kabinet ditentukan oleh hukum pertama termodinamika konservasi energi:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mtext&gt;Net&amp;#x000A0;Heat&amp;#x000A0;Flux&lt;/mtext&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;[&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;eff&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x003B3;&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;turb&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;msub&gt;&lt;mover&gt;&lt;mrow&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x002D9;&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mtext&gt;leak&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mover&gt;&lt;mrow&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x002D9;&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mtext&gt;cool&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(11)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Perambatan kalor kebocoran dinding kaca CAC (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>Q</mi></mrow><mo>&#x002D9;</mo></mover><mrow><mtext>leak</mtext></mrow></msub></mrow></math>) mengikuti Hukum Pendinginan Newton:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover&gt;&lt;mrow&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x002D9;&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mtext&gt;leak&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;glass&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;CAC&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;ambient&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;CAC&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(12)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Maka, persamaan laju perubahan suhu udara intake rak adalah:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;rack&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mtext&gt;Net&amp;#x000A0;Heat&amp;#x000A0;Flux&lt;/mtext&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;thermal,air&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(13)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (7)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>Net&#x000A0;Flux</mtext></mrow></math></td>
+<td style="text-align: left;">Fluks energi termal netto yang tersisa</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;">Target ekuilibrium <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02248;</mo><mn>0</mn><mtext>&#x000A0;kW</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B3;</mi><mrow><mtext>turb</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Faktor koreksi turbulensi dan percampuran lokal</td>
+<td style="text-align: center;">Tanpa satuan</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.05</mn></mrow></math> – <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.15</mn></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>U</mi><mrow><mtext>glass</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Koefisien perpindahan panas menyeluruh dinding kaca</td>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>W</mtext><mo>&#x0002F;</mo><mo stretchy="false">&#x00028;</mo><msup><mtext>m</mtext><mn>2</mn></msup><mo>&#x000B7;</mo><mtext>K</mtext><mo stretchy="false">&#x00029;</mo></mrow></math></td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2.8</mn><mtext>&#x000A0;W</mtext><mo>&#x0002F;</mo><mo stretchy="false">&#x00028;</mo><msup><mtext>m</mtext><mn>2</mn></msup><mo>&#x000B7;</mo><mtext>K</mtext><mo stretchy="false">&#x00029;</mo></mrow></math> (Kaca Laminasi 10mm)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mrow><mtext>CAC</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Luas permukaan selubung kaca lorong dingin</td>
+<td style="text-align: center;">Meter persegi (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mtext>m</mtext><mn>2</mn></msup></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>38.4</mn><msup><mtext>&#x000A0;m</mtext><mn>2</mn></msup></mrow></math> (Untuk 8 Rak Kabinet)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mtext>ambient</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Suhu udara luar ruangan gedung di iklim tropis</td>
+<td style="text-align: center;">Derajat Celsius (°C)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>33.0</mn><mi>°</mi><mtext>C</mtext></mrow></math> (Kondisi Desain Jawa Barat)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mrow><mtext>thermal,air</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Kapasitas kalor massa udara di dalam lorong dingin</td>
+<td style="text-align: center;">Kilojoule per Kelvin (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kJ/K</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2.80</mn><mtext>&#x000A0;kJ/K</mtext></mrow></math></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.8. Persamaan (8): Hukum Kubik Afinitas Kipas (<em>Fan Affinity Law</em>)</h3>
+<p>Berdasarkan hukum dinamika fluida afinitas kipas, daya listrik poros kipas (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>fan</mtext></mrow></msub></mrow></math>) berbanding lurus dengan pangkat tiga rasio putaran per menit (RPM):</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;fan&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;fan,max&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mtext&gt;RPM&lt;/mtext&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mtext&gt;RPM&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;max&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/msup&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;fan,max&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mtext&gt;PWM&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;fan&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;100&lt;/mn&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(14)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Total konsumsi daya kipas seluruh fasilitas dihitung dari penjumlahan daya kipas internal 8 rak server ditambah blower CRAH:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;fan,total&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;msubsup&gt;&lt;mo&gt;&amp;#x02211;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;N&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;rack&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/msubsup&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;[&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;fan,max&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x000B7;&lt;/mo&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mtext&gt;PWM&lt;/mtext&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;100&lt;/mn&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;/msup&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;blower,CRAH&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(15)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (8)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>fan</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Daya listrik yang dikonsumsi motor kipas rak</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.27</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Saat 35%) s/d <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>6.25</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Saat 100%)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>fan,max</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Konsumsi daya listrik motor kipas saat 100% PWM</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>6.25</mn><mtext>&#x000A0;kW&#x000A0;per&#x000A0;rak</mtext></mrow></math> (High-CFM Delta Fan Array)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>RPM</mtext></mrow></math></td>
+<td style="text-align: left;">Kecepatan putaran bilah kipas pendingin</td>
+<td style="text-align: center;">Putaran per menit</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>4.200</mn><mtext>&#x000A0;RPM</mtext></mrow></math> s/d <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>14.500</mn><mtext>&#x000A0;RPM</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>fan,total</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Total konsumsi daya seluruh kipas fasilitas</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>18.5</mn><mtext>&#x000A0;kW</mtext></mrow></math> (AI) vs <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>48.2</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Konvensional)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.9. Persamaan (9): Metrik Efisiensi Energi Fasilitas (PUE)</h3>
+<p><em>Power Usage Effectiveness</em> (PUE) merupakan metrik standar global (ISO/IEC 30134-2) untuk mengukur rasio efisiensi konsumsi daya total fasilitas terhadap daya yang benar-benar digunakan untuk komputasi IT:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mtext&gt;PUE&lt;/mtext&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;Total&amp;#x000A0;Facility&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&amp;#x000A0;Load&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;Chiller&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;Fan,total&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;Auxiliary&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;IT&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(16)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (9)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>PUE</mtext></mrow></math></td>
+<td style="text-align: left;">Rasio efisiensi penggunaan daya gedung data center</td>
+<td style="text-align: center;">Rasio tanpa satuan</td>
+<td style="text-align: left;">Target: <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.20</mn></mrow></math> – <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.25</mn></mrow></math> (Tier-IV Green Standard)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>Total&#x000A0;Facility</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Total daya listrik yang ditarik dari gardu PLN</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.230</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Mode AI) vs <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.450</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Konvensional)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>IT&#x000A0;Load</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Beban daya listrik bersih perangkat komputasi AI</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.000</mn><mtext>&#x000A0;kW</mtext></mrow></math> (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.0</mn><mtext>&#x000A0;MegaWatt&#x000A0;IT&#x000A0;Facility</mtext></mrow></math>)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>Chiller</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Beban kompresor mesin pendingin air (<em>chiller</em>)</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>185</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Mode AI) vs <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>340</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Konvensional)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>Auxiliary</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Konsumsi daya sistem pendukung (UPS, lampu, dll)</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>50</mn><mtext>&#x000A0;kW</mtext></mrow></math> (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>5</mn><mi>&#x00025;</mi></mrow></math> dari <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>IT</mtext></mrow></msub></mrow></math>)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>4.10. Persamaan (10): Formulasi Tekno-Ekonomi Tarif Listrik Industri PLN</h3>
+<p>Biaya operasional listrik (<em>Operational Expenditure</em> / OPEX) fasilitas data center dihitung menggunakan skema tarif resmi PT PLN (Persero) Golongan Tarif Industri Menengah dan Besar (I-3 / I-4) yang membedakan Waktu Beban Puncak (WBP) dan Luar Waktu Beban Puncak (LWBP):</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mtext&gt;Biaya&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;harian&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;[&lt;/mo&gt;&lt;msub&gt;&lt;mo&gt;&amp;#x0222B;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x02208;&lt;/mo&gt;&lt;mtext&gt;LWBP&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;Cooling&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mspace width="0.167em" /&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x000D7;&lt;/mo&gt;&lt;msub&gt;&lt;mtext&gt;Tarif&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;LWBP&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x0002B;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;[&lt;/mo&gt;&lt;msub&gt;&lt;mo&gt;&amp;#x0222B;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x02208;&lt;/mo&gt;&lt;mtext&gt;WBP&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;Cooling&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mspace width="0.167em" /&gt;&lt;mi&gt;d&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x000D7;&lt;/mo&gt;&lt;msub&gt;&lt;mtext&gt;Tarif&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;WBP&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(17)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Dengan skema operasional tahunan datar rata-rata, penghematan tahunan bersih dinyatakan sebagai:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mi&gt;&amp;#x00394;&lt;/mi&gt;&lt;msub&gt;&lt;mtext&gt;OPEX&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;tahunan&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mrow&gt;&lt;mo stretchy="true" fence="true" form="prefix"&gt;&amp;#x00028;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;Cooling,Conv&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x02212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;Cooling,AI&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="true" fence="true" form="postfix"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x000D7;&lt;/mo&gt;&lt;mn&gt;8.760&lt;/mn&gt;&lt;mtext&gt;&amp;#x000A0;jam&lt;/mtext&gt;&lt;mo&gt;&amp;#x000D7;&lt;/mo&gt;&lt;msub&gt;&lt;mtext&gt;Tarif&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;rata-rata&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(18)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Reduksi emisi gas rumah kaca (<em>Greenhouse Gas</em>) setara <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math> dihitung menggunakan faktor emisi jaringan listrik Jawa-Madura-Bali:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mtext&gt;Reduksi&amp;#x000A0;&lt;/mtext&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;O&lt;/mi&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mi&gt;&amp;#x00394;&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;E&lt;/mi&gt;&lt;mrow&gt;&lt;mtext&gt;listrik&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mtext&gt;MWh/tahun&lt;/mtext&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;mo&gt;&amp;#x000D7;&lt;/mo&gt;&lt;msub&gt;&lt;mtext&gt;FE&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;PLN&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(19)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<h4>Tabel Notasi &amp; Definisi Variabel Persamaan (10)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Notasi</th>
+<th style="text-align: left;">Nama Variabel</th>
+<th style="text-align: center;">Satuan Standar (SI)</th>
+<th style="text-align: left;">Nilai Acuan Lapangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mtext>Tarif</mtext><mrow><mtext>LWBP</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Tarif listrik PLN Luar Waktu Beban Puncak</td>
+<td style="text-align: center;">Rupiah per kWh</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>Rp&#x000A0;</mtext><mn>1.300</mn><mo>&#x0002F;</mo><mtext>kWh</mtext></mrow></math> (22:00 – 17:00 WIB)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mtext>Tarif</mtext><mrow><mtext>WBP</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Tarif listrik PLN Waktu Beban Puncak (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.5</mn><mo>&#x000D7;</mo></mrow></math>)</td>
+<td style="text-align: center;">Rupiah per kWh</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>Rp&#x000A0;</mtext><mn>1.950</mn><mo>&#x0002F;</mo><mtext>kWh</mtext></mrow></math> (17:00 – 22:00 WIB)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mtext>Tarif</mtext><mrow><mtext>rata-rata</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Tarif rata-rata tertimbang industri nasional</td>
+<td style="text-align: center;">Rupiah per kWh</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>Rp&#x000A0;</mtext><mn>1.300</mn><mo>&#x0002F;</mo><mtext>kWh</mtext></mrow></math></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>Cooling</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Total daya listrik khusus sistem pendingin (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mtext>Chiller</mtext></mrow></msub><mo>&#x0002B;</mo><msub><mi>P</mi><mrow><mtext>Fan</mtext></mrow></msub></mrow></math>)</td>
+<td style="text-align: center;">Kilowatt (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>kW</mtext></mrow></math>)</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>275</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Mode AI) vs <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>410</mn><mtext>&#x000A0;kW</mtext></mrow></math> (Konvensional)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00394;</mi><msub><mtext>OPEX</mtext><mrow><mtext>tahunan</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Nilai total penghematan finansial uang listrik tahunan</td>
+<td style="text-align: center;">Rupiah per tahun</td>
+<td style="text-align: left;"><strong>Rp 1.537.380.000 / tahun</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mtext>FE</mtext><mrow><mtext>PLN</mtext></mrow></msub></mrow></math></td>
+<td style="text-align: left;">Faktor emisi karbon grid ketenagalistrikan Jamali</td>
+<td style="text-align: center;">Ton <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math> per MWh</td>
+<td style="text-align: left;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.82</mn><mtext>&#x000A0;Ton&#x000A0;</mtext><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub><mo>&#x0002F;</mo><mtext>MWh</mtext></mrow></math> (Kementerian ESDM)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>BAB V. HASIL SIMULASI, VALIDASI, &amp; ANALISIS TEKNO-EKONOMI</h2>
+<h3>5.1. Komparasi Kinerja Operasional (Fasilitas 1.0 MW IT Load)</h3>
+<p>Simulasi komparatif dilakukan dengan membandingkan sistem pendingin konvensional (CRAH ber-PID standar tanpa kontrol ubin aktif) melawan sistem <strong>ThermoGuard AI</strong> pada fasilitas data center 1.0 MW IT Load (1.000 kW) di bawah kondisi cuaca Jakarta/Cikarang (33°C, 80% RH).</p>
+<h4>Tabel Komparasi Teknis &amp; Finansial Komprehensif</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter Kinerja &amp; Evaluasi</th>
+<th style="text-align: center;">Sistem Konvensional</th>
+<th style="text-align: center;">ThermoGuard AI Proaktif</th>
+<th style="text-align: center;">Selisih Keunggulan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Metode Akuisisi Data</strong></td>
+<td style="text-align: center;">Sensor Suhu Udara Intake</td>
+<td style="text-align: center;">Smart PDU Listrik (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>)</td>
+<td style="text-align: center;">Respons Seketika (0.1s)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Pemanfaatan Inersia Termal</strong></td>
+<td style="text-align: center;">Terabaikan (Pasif)</td>
+<td style="text-align: center;">Dieksploitasi Aktif (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mn>120</mn><mtext>s</mtext></mrow></math>)</td>
+<td style="text-align: center;">Jendela Pre-Cooling 2 Menit</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Mekanisme Distribusi Udara</strong></td>
+<td style="text-align: center;">Ubin Statis 40% (Pasif)</td>
+<td style="text-align: center;">Active VAV Tiles (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mi>&#x00025;</mi><mo>&#x02212;</mo><mn>100</mn><mi>&#x00025;</mi></mrow></math>)</td>
+<td style="text-align: center;">Aliran Laminar Presisi</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Suhu Pasokan Udara Plenum</strong></td>
+<td style="text-align: center;">11.5°C (<em>Over-Cooling</em>)</td>
+<td style="text-align: center;">15.0°C (<em>ASHRAE TC 9.9</em>)</td>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x0002B;</mo><mn>3.5</mn><mi>°</mi><mtext>C</mtext></mrow></math> Chiller Lift</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Stabilitas Suhu Rak Saat Lonjakan</strong></td>
+<td style="text-align: center;">Melonjak hingga <strong>44.8°C</strong></td>
+<td style="text-align: center;">Stabil di <strong>23.2°C</strong></td>
+<td style="text-align: center;">Terbebas dari <em>Thermal Shock</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Daya Chiller Rata-rata</strong></td>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>345</mn><mtext>&#x000A0;kW</mtext></mrow></math></td>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>238</mn><mtext>&#x000A0;kW</mtext></mrow></math></td>
+<td style="text-align: center;">Hemat <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>107</mn><mtext>&#x000A0;kW</mtext></mrow></math> (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>31.0</mn><mi>&#x00025;</mi></mrow></math>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Daya Kipas Rata-rata</strong></td>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>65</mn><mtext>&#x000A0;kW</mtext></mrow></math></td>
+<td style="text-align: center;"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>37</mn><mtext>&#x000A0;kW</mtext></mrow></math></td>
+<td style="text-align: center;">Hemat <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>28</mn><mtext>&#x000A0;kW</mtext></mrow></math> (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>43.1</mn><mi>&#x00025;</mi></mrow></math>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total Daya Listrik Pendingin</strong></td>
+<td style="text-align: center;"><strong>410 kW</strong></td>
+<td style="text-align: center;"><strong>275 kW</strong></td>
+<td style="text-align: center;"><strong>Hemat 135 kW (32.9%)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Power Usage Effectiveness (PUE)</strong></td>
+<td style="text-align: center;"><strong>1.45</strong></td>
+<td style="text-align: center;"><strong>1.23</strong></td>
+<td style="text-align: center;"><strong>Penurunan PUE Sebesar 0.22</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Biaya Listrik Pendingin per Bulan</strong></td>
+<td style="text-align: center;">Rp 389.090.000</td>
+<td style="text-align: center;">Rp 260.975.000</td>
+<td style="text-align: center;"><strong>Hemat Rp 128.115.000 / bln</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Biaya Listrik Pendingin per Tahun</strong></td>
+<td style="text-align: center;"><strong>Rp 4.669.080.000</strong></td>
+<td style="text-align: center;"><strong>Rp 3.131.700.000</strong></td>
+<td style="text-align: center;"><strong>Hemat Rp 1.537.380.000 / thn</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Reduksi Emisi Karbon Tahunan</strong></td>
+<td style="text-align: center;">Baseline Fasilitas</td>
+<td style="text-align: center;">Turun <strong>969.8 Ton <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math></strong></td>
+<td style="text-align: center;">Memenuhi Kriteria Green DC</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>5.2. Analisis Kelayakan Finansial &amp; Payback Period (CAPEX vs OPEX)</h3>
+<p>Untuk mengimplementasikan sistem ThermoGuard AI pada fasilitas data center 1.0 MW (terdiri dari sekitar 40 rak kabinet AI), estimasi biaya investasi modal (<em>Capital Expenditure</em> / CAPEX) mencakup:
+1. Pemasangan 40 unit <em>Active Motorized VAV Floor Tiles</em> dengan aktuator servo Modbus: Rp 240.000.000.
+2. Pengadaan Gateway Smart PDU Telemetry &amp; Edge Computing Controller: Rp 180.000.000.
+3. Integrasi perangkat lunak ThermoGuard AI &amp; Commissioning Sensor: Rp 120.000.000.
+* <strong>Total Estimasi CAPEX:</strong> <strong>Rp 540.000.000</strong>.</p>
+<p>Dengan penghematan biaya listrik tahunan bersih sebesar <strong>Rp 1.537.380.000</strong>, periode pengembalian modal (<em>Payback Period</em>) dihitung sebagai berikut:</p>
+<pre><code>    &lt;div class="equation-container"&gt;
+        &lt;div class="equation-math"&gt;&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block" display="inline"&gt;&lt;mrow&gt;&lt;mtext&gt;Payback&amp;#x000A0;Period&lt;/mtext&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mtext&gt;Total&amp;#x000A0;CAPEX&lt;/mtext&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;&amp;#x00394;&lt;/mi&gt;&lt;msub&gt;&lt;mtext&gt;OPEX&lt;/mtext&gt;&lt;mrow&gt;&lt;mtext&gt;tahunan&lt;/mtext&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo&gt;&amp;#x0003D;&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mtext&gt;Rp&amp;#x000A0;&lt;/mtext&gt;&lt;mn&gt;540.000&lt;/mn&gt;&lt;mi&gt;.000&lt;/mi&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mtext&gt;Rp&amp;#x000A0;&lt;/mtext&gt;&lt;mn&gt;1.537&lt;/mn&gt;&lt;mi&gt;.380&lt;/mi&gt;&lt;mi&gt;.000&lt;/mi&gt;&lt;mo&gt;&amp;#x0002F;&lt;/mo&gt;&lt;mtext&gt;tahun&lt;/mtext&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo&gt;&amp;#x02248;&lt;/mo&gt;&lt;mn&gt;0.351&lt;/mn&gt;&lt;mtext&gt;&amp;#x000A0;tahun&lt;/mtext&gt;&lt;mo stretchy="false"&gt;&amp;#x00028;&lt;/mo&gt;&lt;mrow&gt;&lt;mo mathvariant="bold"&gt;&amp;#x02248;&lt;/mo&gt;&lt;mn mathvariant="bold"&gt;4.2&lt;/mn&gt;&lt;mtext mathvariant="bold"&gt;&amp;#x000A0;Bulan!&lt;/mtext&gt;&lt;/mrow&gt;&lt;mo stretchy="false"&gt;&amp;#x00029;&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/div&gt;
+        &lt;div class="equation-number"&gt;(20)&lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+<p>Nilai <em>Return on Investment</em> (ROI) dalam kurun waktu 3 tahun mencapai lebih dari <strong>750%</strong>, membuktikan bahwa inovasi ini tidak hanya unggul secara akademis dan teknis rekayasa, namun juga sangat layak secara komersial bagi ekosistem industri data center nasional.</p>
+<hr />
+<h2>BAB VI. KESIMPULAN, REKOMENDASI, &amp; ROADMAP HILIRISASI</h2>
+<h3>6.1. Kesimpulan</h3>
+<ol>
+<li><strong>Inovasi Non-Intrusif yang Relevan:</strong> Penggunaan <em>Smart PDU Power-First Sensing</em> terbukti mampu mengatasi dilema privasi <em>tenant colocation</em> di Indonesia, mendeteksi penarikan daya listrik seketika (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>) tanpa membutuhkan izin membaca sistem operasi atau antrean tugas komputasi server.</li>
+<li><strong>Kemenangan Eksploitasi Fisika:</strong> Pemanfaatan jendela inersia termal alami sasis server (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mn>120</mn><mtext>s</mtext></mrow></math>) memberikan waktu reaksi yang cukup bagi aktuator VAV ubin lantai untuk mengalirkan udara sejuk secara preventif (<em>pre-cooling</em>), menjaga suhu operasional rak stabil di 23.2°C (standar ASHRAE TC 9.9) dan mencegah kerusakan termal pada chip GPU berharga mahal.</li>
+<li><strong>Dampak Ekonomi &amp; Keberlanjutan Nyata:</strong> ThermoGuard AI menurunkan PUE fasilitas dari 1.45 menjadi 1.23, memangkas tagihan listrik PLN sebesar Rp 1,53 Miliar per tahun per MW IT, dengan <em>payback period</em> sangat singkat (4.2 bulan) serta mereduksi emisi karbon hingga 969 Ton <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math> per tahun guna mendukung target <em>Net Zero Emission 2060</em> Indonesia.</li>
+</ol>
+<h3>6.2. Rekomendasi &amp; Roadmap Hilirisasi</h3>
+<ul>
+<li><strong>Fase 1 (Pilot Project):</strong> Penerapan uji coba skala <em>proof-of-concept</em> pada kluster inferensi kecerdasan buatan 100 kW di fasilitas data center lokal.</li>
+<li><strong>Fase 2 (Integrasi Dynamic Grid PLN):</strong> Mengembangkan modul optimasi tarif beban puncak PLN (WBP 17:00 – 22:00 WIB) yang bersinergi dengan sistem baterai penyimpan energi (<em>Battery Energy Storage System</em> / BESS).</li>
+<li><strong>Fase 3 (Hilirisasi Nasional):</strong> Standardisasi sistem kontrol pendingin proaktif lokal untuk sertifikasi <em>Green Data Center</em> Kementerian Komunikasi dan Digital (Komdigi) serta Kementerian ESDM.</li>
+</ul>
+<hr />
+<h2>BAB VII. DOKUMEN PENGAJUAN SELEKSI &amp; JAWABAN RESMI MAJU:ON UNIVERSITY TRACK</h2>
+<p>Bagian ini menyajikan dokumentasi resmi formulir pendaftaran dan jawaban atas 6 pertanyaan seleksi evaluasi program <strong>MAJU:ON Season 2 (University Track)</strong> yang dioperasikan oleh UD IMPACT bersama SK Innovation E&amp;S dan konsorsium universitas terkemuka di Indonesia.</p>
+<h3>7.1. Matriks Struktur Organisasi &amp; Pembagian Peran Tim 5 Anggota</h3>
+<p>Untuk memenuhi standar tata kelola kompetisi startup dan hackathon internasional, tim ThermoGuard AI membagi 5 anggota ke dalam dua pilar fungsional utama:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">No</th>
+<th style="text-align: left;">Nama Anggota</th>
+<th style="text-align: left;">Posisi / Peran Tim</th>
+<th style="text-align: center;">Divisi</th>
+<th style="text-align: left;">Fokus &amp; Tanggung Jawab Utama</th>
+<th style="text-align: center;">Komitmen Waktu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>Hamdi</strong></td>
+<td style="text-align: left;"><strong>Project Leader &amp; Lead Developer</strong></td>
+<td style="text-align: center;">Leadership &amp; Engineering</td>
+<td style="text-align: left;">Arsitektur software, integrasi physics engine, koordinasi tim, dan pembuka pitch.</td>
+<td style="text-align: center;"><strong>20 Jam / Minggu</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>Arven</strong></td>
+<td style="text-align: left;"><strong>Hardware &amp; Physics Lead (CTO)</strong></td>
+<td style="text-align: center;">Engineering &amp; Termal</td>
+<td style="text-align: left;">Penurunan 10 rumus termodinamika, spesifikasi katup VAV, dan instrumentasi PDU.</td>
+<td style="text-align: center;"><strong>18 Jam / Minggu</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>Tata</strong></td>
+<td style="text-align: left;"><strong>Chief Product Officer (CPO)</strong></td>
+<td style="text-align: center;">Produk &amp; UI/UX</td>
+<td style="text-align: left;">Desain visual Digital Twin, operator live demo panggung, dan estetika pitch deck.</td>
+<td style="text-align: center;"><strong>16 Jam / Minggu</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>Nadira</strong></td>
+<td style="text-align: left;"><strong>Chief Financial Officer (CFO)</strong></td>
+<td style="text-align: center;">Finansial &amp; ESG</td>
+<td style="text-align: left;">Pemodelan keuangan P&amp;L, payback period 4.2 bulan, dan audit emisi karbon <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math>.</td>
+<td style="text-align: center;"><strong>16 Jam / Minggu</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><strong>Sasa</strong></td>
+<td style="text-align: left;"><strong>Chief Commercial Officer (CCO)</strong></td>
+<td style="text-align: center;">Bisnis &amp; Riset Pasar</td>
+<td style="text-align: left;">Riset pasar TAM/SAM/SOM, analisis kompetitor, validasi B2B, dan administrasi lomba.</td>
+<td style="text-align: center;"><strong>16 Jam / Minggu</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>TOTAL</strong></td>
+<td style="text-align: left;"><strong>5 Anggota</strong></td>
+<td style="text-align: left;"><strong>Cross-Disciplinary Team</strong></td>
+<td style="text-align: center;"><strong>Terpadu</strong></td>
+<td style="text-align: left;"><strong>Dedikasi Intensif Mengikuti Seluruh Rangkaian Program MAJU:ON</strong></td>
+<td style="text-align: center;"><strong>86 Jam / Minggu</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>7.2. Jawaban Pertanyaan Seleksi 1: Masalah, Pengguna, Wawancara 12 Praktisi, &amp; Pembelajaran Mengejutkan</h3>
+<blockquote>
+<p><strong>Pertanyaan:</strong> <em>Masalah apa yang ingin Anda selesaikan, dan siapa yang mengalaminya? Sudah berapa calon pengguna yang Anda ajak bicara, bagaimana Anda menemukan mereka, dan apa yang Anda pelajari yang mengejutkan atau mengubah cara pandang Anda?</em></p>
+</blockquote>
+<p><strong>Jawaban Resmi:</strong>
+Masalah yang kami selesaikan adalah <strong>inefisiensi energi masif dan risiko thermal spike pada pusat data AI di iklim tropis Indonesia</strong>. Ledakan komputasi AI (GPU dense clusters) melonjakkan beban panas dari 5 kW menjadi 15–25 kW per rak. Sistem pendingin AC konvensional merespons secara lambat (lag sensor udara 1–3 menit), memaksa operator melakukan overcooling ekstrem 11.5°C secara 24/7. Akibatnya, pendingin menyedot 40% dari total konsumsi listrik gedung (PUE 1.45–1.60), memboroskan miliaran rupiah per tahun dan memperparah emisi karbon. Pihak yang mengalaminya adalah <strong>Data Center Facility Managers, Chief Technology Officers (CTO), dan Sustainability Officers</strong> pada operator data center colocation dan enterprise di Indonesia.</p>
+<p>Kami telah mewawancarai <strong>12 orang praktisi infrastruktur</strong> (5 Facility/HVAC Engineer di koridor data center Cikarang–Karawang, 4 IT Infrastructure Lead korporasi/startup, dan 3 konsultan data center Tier-3/4). Kami menjangkau mereka melalui jejaring alumni kampus di industri teknologi, LinkedIn outreach profesional, dan forum komunitas data center (IDPRO).</p>
+<p><strong>Pembelajaran mengejutkan yang mengubah cara pandang kami:</strong><br />
+Awalnya, kami berasumsi sistem pendingin AI dapat langsung membaca antrean tugas (<em>job queue</em> Kubernetes/Slurm) server pelanggan untuk mengantisipasi panas. Namun, <strong>100% manajer data center colocation menegaskan bahwa pengelola gedung DILARANG KERAS mengakses atau menyentuh sistem operasi server pelanggan demi privasi data, kepatuhan ISO 27001, dan kerahasiaan bisnis tenant</strong>. Pembelajaran krusial inilah yang membuat kami memutar arah (<em>pivot</em>) merancang <strong>ThermoGuard AI</strong>: sistem kendali pendingin proaktif yang <strong>100% non-intrusif</strong> menggunakan telemetri daya <strong>Smart PDU (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>)</strong>, sehingga privasi pelanggan tetap terjaga mutlak namun pendinginan tetap bisa diantisipasi sebelum panas merambat.</p>
+<hr />
+<h3>7.3. Jawaban Pertanyaan Seleksi 2: Ide Produk, Pemanfaatan AI, Solusi Energi &amp; Iklim</h3>
+<blockquote>
+<p><strong>Pertanyaan:</strong> <em>Apa ide produk atau layanan Anda, dan bagaimana ide tersebut memanfaatkan AI atau menyelesaikan masalah energi atau iklim?</em></p>
+</blockquote>
+<p><strong>Jawaban Resmi:</strong>
+Ide produk kami adalah <strong>ThermoGuard AI</strong>, sebuah sistem perangkat lunak <em>Digital Twin &amp; Proactive Cooling Controller</em> cerdas untuk fasilitas pusat data AI. </p>
+<p><strong>Pemanfaatan AI &amp; Pemodelan Fisika:</strong><br />
+ThermoGuard AI memadukan <em>Physics-Informed Neural Network</em> (PINN) dengan algoritma prediksi tren daya (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mi>P</mi><mo>&#x0002F;</mo><mi>d</mi><mi>t</mi></mrow></math>). Sistem mendeteksi lonjakan arus listrik komputasi GPU secara instan (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>) melalui sensor Smart PDU. AI kemudian mengeksploitasi <strong>hukum inersia termal alami</strong> sasis server (di mana terdapat jeda fisik 60–180 detik sebelum panas silikon merambat ke udara lorong) untuk secara proaktif mengatur katup kisi lantai bermotor (<strong>Active VAV Perforated Floor Tiles</strong>, bukaan 0%–100%) di dalam lorong bersekat kaca hermetis <strong>Cold Aisle Containment (CAC)</strong>. Udara dingin diarahkan secara tepat sasaran ke rak yang akan memanas beberapa saat sebelum lonjakan suhu terjadi.</p>
+<p><strong>Menyelesaikan Masalah Energi &amp; Iklim:</strong><br />
+Karena pendinginan dilakukan secara terantisipasi, ThermoGuard AI berhasil:
+1. Mengeliminasi pemborosan overcooling, memungkinkan suhu pasokan udara dinaikkan dari 11.5°C ke 15.0°C secara aman (menghemat konsumsi kompresor chiller 15%–20%).
+2. Menurunkan kecepatan putaran kipas sasis saat beban rendah, memangkas daya kipas hingga 80% berkat Hukum Kubik Afinitas Kipas (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi><mo>&#x0221D;</mo><msup><mtext>RPM</mtext><mn>3</mn></msup></mrow></math>).
+3. Pada kapasitas fasilitas standar 1.0 MW IT Load, sistem ini memangkas konsumsi daya pendingin sebesar <strong>32.9% (hemat daya konstan 135 kW)</strong>, menurunkan nilai PUE dari <strong>1.45 menjadi 1.23</strong>, dan <strong>mereduksi emisi karbon sebesar 969,8 Ton <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math> per tahun</strong> di jaringan listrik Jawa-Madura-Bali.</p>
+<hr />
+<h3>7.4. Jawaban Pertanyaan Seleksi 3: Tahap Usaha, Pengujian Prototipe, &amp; Hasil Angka Konkret</h3>
+<blockquote>
+<p><strong>Pertanyaan:</strong> <em>Di tahap mana usaha Anda sekarang (ide, prototipe, atau sudah diluncurkan), dan apa saja yang sudah Anda lakukan untuk menguji ide tersebut? Misalnya wawancara, mockup, landing page, pilot kecil, atau penjualan pertama. Apa hasilnya, dan apa yang Anda pelajari? Sertakan angka jika ada.</em></p>
+</blockquote>
+<p><strong>Jawaban Resmi:</strong>
+Usaha kami saat ini berada di <strong>Tahap Prototipe Fungsional &amp; Validasi Termofluida (<em>Working Prototype / PoC Ready</em>)</strong>.</p>
+<p><strong>Langkah Pengujian yang Telah Dilakukan:</strong>
+1. <strong>Pembangunan Simulator Digital Twin Interaktif (Canvas 60 FPS):</strong> Kami telah mengembangkan simulator web fungsional penuh yang memodelkan 8 rak kluster AI, partikel aerodinamika fluida (CFD vertikal), respon katup ubin VAV, dan telemetri Smart PDU real-time.
+2. <strong>Pengujian Stres Beban Komputasi Ekstrem:</strong> Kami menguji ketahanan termal dengan mensimulasikan lonjakan komputasi GPU 24.8 kW per rak di bawah iklim tropis Indonesia (33.0°C, 80% RH).
+3. <strong>Penyusunan Naskah Spesifikasi Ilmiah &amp; Whitepaper Teknis:</strong> Menurunkan dan memvalidasi 10 persamaan diferensial termodinamika (model inersia termal <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mn>120</mn><mtext>s</mtext></mrow></math>, entalpi konveksi, tekanan plenum 35 Pa, dan formulasi tarif listrik PLN).</p>
+<p><strong>Hasil Pengujian &amp; Angka yang Didapatkan:</strong>
+* <strong>Stabilitas Termal:</strong> Pada sistem konvensional, lonjakan daya menyebabkan suhu udara lorong melonjak hingga <strong>44.8°C</strong> (<em>overheat / throttling</em>). Dengan ThermoGuard AI, suhu intake rak berhasil dikunci stabil pada <strong>23.2°C</strong> (memenuhi amplop aman ASHRAE TC 9.9).
+* <strong>Kinerja Energi:</strong> PUE fasilitas berhasil diturunkan sebesar <strong>0.22 poin</strong> (dari 1.45 menjadi 1.23).
+* <strong>Keekonomian:</strong> Menghasilkan efisiensi daya pendingin sebesar <strong>135 kW</strong>, yang setara dengan penghematan biaya listrik sebesar <strong>Rp 128,1 Juta per bulan atau Rp 1,53 Miliar per tahun</strong> per MW kapasitas IT.</p>
+<p><strong>Pembelajaran Utama:</strong> Pengujian membuktikan bahwa mengendalikan aliran udara dingin di bawah lantai (<em>underfloor VAV tiles</em>) jauh lebih efisien dan hemat energi daripada memacu kipas blower gedung di putaran maksimal 100%.</p>
+<hr />
+<h3>7.5. Jawaban Pertanyaan Seleksi 4: Calon Pembeli Pertama, Go-To-Market, &amp; Model Pendapatan</h3>
+<blockquote>
+<p><strong>Pertanyaan:</strong> <em>Menurut Anda, siapa yang akan pertama kali membayar produk ini, dan mengapa? Bagaimana cara Anda menjangkau mereka? Ceritakan perkiraan terbaik Anda saat ini tentang cara menghasilkan pendapatan.</em></p>
+</blockquote>
+<p><strong>Jawaban Resmi:</strong>
+<strong>Pembeli Pertama:</strong><br />
+Target pembeli pertama kami adalah <strong>Operator Pusat Data Colocation Menengah dan Data Center Enterprise Mandiri di Indonesia</strong> (seperti perbankan nasional, BUMN, penyedia cloud lokal, atau institusi riset) yang mengoperasikan fasilitas berdaya 1–3 MW di kawasan Jabodetabek/Jawa Barat. Mereka adalah pihak yang paling cepat membayar karena menghadapi lonjakan tagihan listrik PLN puluhan miliar rupiah per tahun dan memiliki target ketat dari regulator/ESG untuk mencapai PUE di bawah 1.3.</p>
+<p><strong>Cara Menjangkau Mereka (Go-To-Market):</strong>
+1. <strong>Penawaran Pilot Project Tanpa Risiko (<em>Proof of Concept</em>):</strong> Kami menawarkan instalasi uji coba pada skala kecil (1 pod / 1 baris lorong berisi 8–10 rak server) selama 30 hari untuk membuktikan data penurunan PUE dan penghematan meteran listrik PLN secara langsung di lokasi mereka.
+2. <strong>Kemitraan Asosiasi Industri:</strong> Menjalin kerja sama strategis melalui Asosiasi Data Center Indonesia (IDPRO) dan konsorsium universitas mitra MAJU:ON untuk membuka akses pintu ke jajaran direktur operasional/fasilitas.</p>
+<p><strong>Cara Menghasilkan Pendapatan (Revenue Model):</strong>
+Kami mengombinasikan 2 aliran pendapatan utama (<em>Dual Revenue Stream</em>):
+1. <strong>Gain-Sharing Model (Model Utama - B2B Performance Based):</strong><br />
+   Klien tidak dibebani biaya perangkat lunak di muka. Kami mengambil bagi hasil <strong>20% dari total penghematan riil tagihan listrik PLN bulanan</strong>. Dari penghematan Rp 1,53 Miliar/tahun per 1 MW, ThermoGuard AI memperoleh pendapatan berulang (<em>recurring revenue</em>) sebesar <strong>~Rp 300 Juta per tahun per fasilitas</strong>.
+2. <strong>Hardware Integration &amp; Retrofit Fee:</strong><br />
+   Penyediaan dan pemasangan modul katup cerdas <em>Active VAV Floor Tile</em> (estimasi CAPEX klien Rp 540 Juta untuk 40 rak), di mana kami mengambil margin keuntungan perangkat keras sebesar <strong>20% – 25%</strong> (sekitar Rp 100–120 Juta per proyek).</p>
+<p>Model ini sangat disukai klien korporasi karena memiliki periode pengembalian modal (<em>Payback Period</em>) sangat singkat, yaitu hanya <strong>4,2 Bulan</strong> dengan ROI 3 tahun mencapai <strong>750%</strong>.</p>
+<hr />
+<h3>7.6. Jawaban Pertanyaan Seleksi 5: Profil 5 Anggota Tim, Pengalaman, &amp; Komitmen Jam/Minggu</h3>
+<blockquote>
+<p><strong>Pertanyaan:</strong> <em>Siapa saja anggota tim Anda, dan apa peran masing-masing? Pengalaman relevan apa yang mereka miliki, dan berapa jam per minggu yang bisa diluangkan setiap anggota untuk MAJU:ON?</em></p>
+</blockquote>
+<p><strong>Jawaban Resmi:</strong>
+Tim kami terdiri dari 5 mahasiswa lintas disiplin (Teknik Informatika, Rekayasa Termal/Fisika, Desain Produk, dan Manajemen Bisnis/Keuangan) dengan formasi yang solid dan saling melengkapi:</p>
+<ol>
+<li><strong>Hamdi — Project Leader &amp; Lead Developer</strong></li>
+<li><em>Pengalaman Relevan:</em> Berpengalaman dalam pengembangan perangkat lunak full-stack, arsitektur web interaktif, pemodelan data waktu nyata (<em>real-time processing</em>), dan manajemen proyek teknologi. Bertanggung jawab memimpin orkestrasi tim dan membangun core engine aplikasi ThermoGuard AI.</li>
+<li>
+<p><em>Komitmen Waktu:</em> <strong>20 jam per minggu</strong>.</p>
+</li>
+<li>
+<p><strong>Arven — Hardware &amp; Physics Engineering Lead</strong></p>
+</li>
+<li><em>Pengalaman Relevan:</em> Memiliki latar belakang kuat di bidang termodinamika terapan, dinamika fluida (CFD), instrumentasi mikrokontroler/sensor PDU, dan standar pendingin ASHRAE. Bertanggung jawab atas penurunan 10 persamaan matematis termal dan desain mekanik katup VAV.</li>
+<li>
+<p><em>Komitmen Waktu:</em> <strong>18 jam per minggu</strong>.</p>
+</li>
+<li>
+<p><strong>Tata — Chief Product Officer (CPO) &amp; UI/UX Demo Lead</strong></p>
+</li>
+<li><em>Pengalaman Relevan:</em> Memiliki keahlian dalam desain antarmuka pengguna (UI/UX Figma), grafika canvas 2D/3D interaktif, pembuatan prototipe Digital Twin, serta perancangan materi visual Pitch Deck startup. Bertanggung jawab atas pengoperasian demo langsung di hadapan juri.</li>
+<li>
+<p><em>Komitmen Waktu:</em> <strong>16 jam per minggu</strong>.</p>
+</li>
+<li>
+<p><strong>Nadira — Chief Financial Officer (CFO) &amp; Sustainability/ESG Strategist</strong></p>
+</li>
+<li><em>Pengalaman Relevan:</em> Berpengalaman dalam pemodelan keuangan (<em>financial projections</em>), analisis kelayakan investasi (CAPEX, OPEX, ROI, Payback Period), perhitungan audit emisi gas rumah kaca (<em>carbon accounting</em>), dan tarif industri energi. Bertanggung jawab atas matriks tekno-ekonomi dan dampak hijau ESG.</li>
+<li>
+<p><em>Komitmen Waktu:</em> <strong>16 jam per minggu</strong>.</p>
+</li>
+<li>
+<p><strong>Sasa — Chief Commercial Officer (CCO) &amp; Market Research Lead</strong></p>
+</li>
+<li><em>Pengalaman Relevan:</em> Memiliki pengalaman dalam riset pasar B2B (<em>market sizing</em> TAM/SAM/SOM), wawancara validasi pelanggan (<em>customer discovery</em>), analisis kompetitif, dan administrasi kemitraan startup. Bertanggung jawab atas strategi Go-To-Market dan validasi industri.</li>
+<li><em>Komitmen Waktu:</em> <strong>16 jam per minggu</strong>.</li>
+</ol>
+<p><em>(Total komitmen gabungan tim adalah <strong>86 jam per minggu</strong>, siap mendedikasikan waktu secara intensif untuk mengikuti seluruh rangkaian pembinaan, hackathon, dan inkubasi MAJU:ON).</em></p>
+<hr />
+<h3>7.7. Jawaban Pertanyaan Seleksi 6: Target Milestone (Nov 2026 – Mei 2027) &amp; Dampak Lingkungan</h3>
+<blockquote>
+<p><strong>Pertanyaan:</strong> <em>Sebutkan dua target yang ingin Anda capai selama MAJU:ON (November 2026 – Mei 2027), lengkap dengan angka dan tenggat waktu. Contoh: “Mewawancarai 30 petani paling lambat Januari” atau “Menjalankan pilot dengan satu sekolah paling lambat Maret”. Perubahan apa yang akan terjadi bagi komunitas atau lingkungan jika target tersebut tercapai?</em></p>
+</blockquote>
+<p><strong>Jawaban Resmi:</strong>
+Selama mengikuti program MAJU:ON (November 2026 – Mei 2027), dua target utama yang terukur dan realistis yang ingin kami capai adalah:</p>
+<ul>
+<li>
+<p><strong>Target 1 (Teknis &amp; Validasi Lapangan):</strong><br />
+<strong>"Menyelesaikan perakitan 1 unit purwarupa fisik Active VAV Floor Tile skala penuh dan menguji integrasi telemetri Smart PDU pada kluster server uji coba minimal 50 kW di laboratorium kampus / fasilitas data center mitra paling lambat Maret 2027."</strong><br />
+<em>(Indikator keberhasilan: Katup VAV mampu merespons lonjakan daya dalam waktu &lt;4 detik dan menjaga suhu sasis server stabil di bawah 24°C).</em></p>
+</li>
+<li>
+<p><strong>Target 2 (Komersial &amp; Kemitraan Bisnis):</strong><br />
+<strong>"Mengamankan minimal 2 Letter of Intent (LOI) atau Nota Kesepahaman uji coba pilot dari operator data center di Jawa Barat dengan potensi kapasitas termonitor minimal 2.0 MW paling lambat Mei 2027."</strong><br />
+<em>(Indikator keberhasilan: Dokumen kesepakatan tertulis untuk uji coba komersial dengan proyeksi penghematan listrik minimal Rp 2 Miliar/tahun).</em></p>
+</li>
+</ul>
+<p><strong>Perubahan Nyata bagi Lingkungan &amp; Komunitas:</strong><br />
+1. <strong>Dampak Lingkungan (Dekarbonisasi Sektor Digital):</strong><br />
+   Tercapainya target ini akan membuktikan bahwa fasilitas data center AI di Indonesia dapat beroperasi hemat energi dengan PUE 1.23. Untuk setiap 1 fasilitas data center 1 MW yang mengadopsi ThermoGuard AI, emisi karbon berkurang sebesar <strong>969,8 Ton <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></mrow></math> per tahun</strong> (setara dengan meniadakan emisi dari 210 mobil bensin per tahun atau menanam lebih dari 44.000 pohon).
+2. <strong>Dampak bagi Komunitas &amp; Kedaulatan AI Nasional:</strong><br />
+   Tingginya biaya listrik selama ini menjadi penghambat utama riset AI di kampus dan startup lokal Indonesia. Dengan memangkas 33% biaya pendinginan, inovasi ini menekan biaya operasional komputasi AI nasional, memungkinkan universitas dan startup lokal mengembangkan inovasi kecerdasan buatan secara terjangkau tanpa merusak lingkungan hidup dan ekosistem energi Indonesia.</p>
+<hr />
+<h2>DAFTAR PUSTAKA</h2>
+<ol>
+<li><strong>ASHRAE Technical Committee 9.9.</strong> (2021). <em>Thermal Guidelines for Data Processing Environments (5th Edition)</em>. American Society of Heating, Refrigerating and Air-Conditioning Engineers, Atlanta, GA.</li>
+<li><strong>Uptime Institute.</strong> (2022). <em>Tier Standard: Topology - Data Center Site Infrastructure Tier Standard</em>. Uptime Institute Professional Services, New York.</li>
+<li><strong>DeepMind Technologies &amp; Google LLC.</strong> (2018). <em>Safety-first AI for autonomous data centre cooling and energy optimization</em>. Google Cloud Technical Report.</li>
+<li><strong>Kementerian Energi dan Sumber Daya Mineral (ESDM) Republik Indonesia.</strong> (2023). <em>Laporan Faktor Emisi Gas Rumah Kaca Sektor Ketenagalistrikan Sistem Ketenagalistrikan Jawa-Madura-Bali</em>. Direktorat Jenderal Ketenagalistrikan, Jakarta.</li>
+<li><strong>PT PLN (Persero).</strong> (2024). <em>Tarif Tenaga Listrik (TTL) Penyesuaian Tarif Golongan Pelanggan Industri Menengah dan Besar (I-3 dan I-4)</em>. Peraturan Menteri ESDM No. 8 Tahun 2023.</li>
+<li><strong>Schmidt, R., &amp; Iyengar, M.</strong> (2015). <em>Thermal Design of High-Performance Data Centers</em>. ASME Press, New York.</li>
+<li><strong>Barroso, L. A., &amp; Hölzle, U.</strong> (2019). <em>The Datacenter as a Computer: Designing Warehouse-Scale Machines (3rd Edition)</em>. Morgan &amp; Claypool Publishers.</li>
+<li><strong>ISO/IEC 30134-2.</strong> (2016). <em>Information technology — Data centres — Key performance indicators — Part 2: Power usage effectiveness (PUE)</em>. International Organization for Standardization, Geneva.</li>
+</ol>
+</body>
+</html>

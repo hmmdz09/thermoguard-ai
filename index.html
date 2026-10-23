@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThermoGuard AI — Sistem Pendingin Data Center Proaktif Berbasis Physics-Informed AI</title>
-    <meta name="description" content="Prototipe simulasi interaktif pendingin data center proaktif berbasis Physics-Informed AI dengan desain modern SF UI Display.">
+    <title>ThermoGuard AI — Sistem Pendingin Data Center Proaktif Berbasis Smart PDU Power-First Sensing & Cold Aisle Containment</title>
+    <meta name="description" content="Simulasi pendingin data center Tier-3/Tier-4 Indonesia berbasis Smart PDU Power-First Sensing, eksploitasi jeda inersia termal 120s, dan Cold Aisle Containment dengan Active VAV Floor Tiles.">
 
-    <!-- Google Fonts: Plus Jakarta Sans, Inter & JetBrains Mono -->
+    <!-- Google Fonts: 2-Font Typography System (Space Grotesk [Heading] & Inter [Body]) + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,7 +25,8 @@
                         studioBg: '#EAEAEF',
                     },
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+                        sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        heading: ['"Space Grotesk"', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
                     }
                 }
@@ -39,7 +40,7 @@
 <body class="bg-[#EAEAEF] text-[#181A1A] min-h-screen flex flex-col font-sans selection:bg-[#AF6EFF]/20 selection:text-[#181A1A]">
 
     <!-- ═══════════════════════════════════════════════════════════════
-         MAIN APP NAVIGATION BAR (Minimalist Executive Header)
+         MAIN APP NAVIGATION BAR (Executive Minimalist Header)
          ═══════════════════════════════════════════════════════════════ -->
     <header class="sticky top-0 z-50 bg-[#EAEAEF]/95 backdrop-blur-md border-b border-black/5 px-4 lg:px-8 py-3">
         <div class="max-w-[1720px] mx-auto flex items-center justify-between gap-4">
@@ -52,9 +53,9 @@
                     </div>
                 </div>
                 <div class="flex items-baseline gap-2">
-                    <span class="text-lg font-black tracking-tight text-[#181A1A]">ThermoGuard<span class="text-[#AF6EFF]">.</span></span>
+                    <span class="text-lg font-bold tracking-tight text-[#181A1A] font-heading">ThermoGuard<span class="text-[#AF6EFF]">.</span></span>
                     <span class="text-[10px] font-mono font-bold text-[#7A8293] uppercase hidden sm:inline px-2 py-0.5 rounded-full bg-white border border-black/5">
-                        PINN AI v2.4
+                        Smart PDU v3.2
                     </span>
                 </div>
             </div>
@@ -62,7 +63,7 @@
             <!-- Center Floating Segmented Nav Pills -->
             <div class="hidden md:flex nav-pill-bar">
                 <button class="nav-pill-btn active">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z"/></svg>
                     Dashboard
                 </button>
                 <button class="nav-pill-btn" onclick="document.getElementById('modeBtnAI').click()">
@@ -70,33 +71,38 @@
                     AI Proaktif
                 </button>
                 <button class="nav-pill-btn" onclick="document.getElementById('jobSchedulerContainer').scrollIntoView({behavior:'smooth'})">
-                    <svg class="w-3.5 h-3.5 text-[#FFC46D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Job Queue
+                    <svg class="w-3.5 h-3.5 text-[#FFC46D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Smart PDU Telemetry
                 </button>
                 <button class="nav-pill-btn" onclick="document.getElementById('btnToggleAIVectors').click()">
-                    <svg class="w-3.5 h-3.5 text-[#A1E688]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    Laser Raycast
+                    <svg class="w-3.5 h-3.5 text-[#A1E688]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    Active VAV Tiles
                 </button>
             </div>
 
-            <!-- Right Controls: Weather, Bell, Status -->
+            <!-- Right Controls: Weather & Containment Status -->
             <div class="flex items-center gap-2.5">
                 <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-black/5 text-xs font-semibold text-[#181A1A] shadow-sm">
                     <span>☀️</span>
-                    <span>Indonesia <strong class="text-[#AF6EFF]" id="headerOutdoorTemp">33°C</strong></span>
+                    <span>Tropis <strong class="text-[#AF6EFF]" id="headerOutdoorTemp">33°C (80% RH)</strong></span>
                 </div>
 
-                <button class="icon-square-btn" title="Notifikasi Sistem" onclick="alert('ThermoGuard AI: PINN Core memprediksi beban LLM 95% dalam T-15m. Pre-cooling aktif.')">
+                <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#EEFAEA] border border-[#A1E688]/40 text-xs font-semibold text-[#1A5912] shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-[#A1E688] animate-pulse"></span>
+                    <span id="headerContainmentStatus">Aisle: Sealed Tier-IV</span>
+                </div>
+
+                <button class="icon-square-btn" title="Notifikasi Sistem" onclick="window.app && window.app.showNotification('Telemetri PDU Berjalan', 'Smart PDU mendeteksi profil daya 8 rak. Pre-cooling VAV aktif otomatis memanfaatkan jeda inersia termal 120 detik.')">
                     <svg class="w-4 h-4 text-[#181A1A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                 </button>
 
-                <div class="flex items-center gap-2.5 bg-white pl-1.5 pr-3 py-1 rounded-full border border-black/5 shadow-sm">
+                <div class="flex items-center gap-2 bg-white pl-1.5 pr-3 py-1 rounded-full border border-black/5 shadow-sm">
                     <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-[#AF6EFF] to-[#A1E688] flex items-center justify-center text-white font-bold text-xs shadow-inner">
                         TG
                     </div>
                     <div class="text-left hidden sm:block">
                         <div class="text-[12px] font-bold text-[#181A1A] leading-tight">PINN AI</div>
-                        <div class="text-[10px] text-[#A1E688] font-bold leading-tight">● Proaktif</div>
+                        <div class="text-[10px] text-[#A1E688] font-bold leading-tight">● PDU Power-First</div>
                     </div>
                 </div>
             </div>
@@ -105,23 +111,24 @@
     </header>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         MAIN BENTO-GRID DASHBOARD (Ultra-Clean Executive Architecture)
+         MAIN BENTO-GRID DASHBOARD (Executive Architecture)
          ═══════════════════════════════════════════════════════════════ -->
     <main class="flex-1 p-3 sm:p-5 lg:p-6 max-w-[1720px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
         <!-- ═══════════════════════════════════════════════════════════
-             KOLOM KIRI: KONTROL, KINERJA, & LIVE STREAM (3 Kolom)
+             KOLOM KIRI: KONTROL, LINGKUNGAN CAC, & LIVE STREAM (3 Kolom)
              ═══════════════════════════════════════════════════════════ -->
-        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-4">
+        <div class="lg:col-span-3 flex flex-col gap-4">
 
             <!-- Card 1: Mode Switcher & Physical Controls -->
-            <div class="light-card p-5">
-                <div class="text-xs font-bold text-[#181A1A] mb-2.5">
-                    Kontrol Sistem
+            <div class="light-card p-4 sm:p-5">
+                <div class="text-xs font-bold text-[#181A1A] mb-2.5 flex items-center justify-between font-heading">
+                    <span>Kontrol Sistem & Pendingin</span>
+                    <span class="badge-mint text-[9.5px] py-0.5 px-2">Tier-IV Active</span>
                 </div>
 
                 <!-- Segmented Control Bar -->
-                <div class="mode-segmented-bar mb-4">
+                <div class="mode-segmented-bar mb-3.5">
                     <button id="modeBtnConv" class="mode-tab-btn">
                         <span class="w-2 h-2 rounded-full bg-[#F43F5E]"></span>
                         <span>Mode A: Reaktif</span>
@@ -133,10 +140,10 @@
                 </div>
 
                 <!-- Sliders (Clean & Minimalist) -->
-                <div class="space-y-3.5 text-xs font-medium">
+                <div class="space-y-3 text-xs font-medium">
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <span class="text-[#5E6573]">Suhu Luar</span>
+                            <span class="text-[#5E6573]">Suhu Luar Tropis</span>
                             <span id="displayOutdoorTemp" class="font-bold text-[#AF6EFF] font-mono">33°C</span>
                         </div>
                         <input id="sliderOutdoorTemp" type="range" min="25" max="45" value="33" step="1" class="clean-slider">
@@ -148,7 +155,7 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <span class="text-[#5E6573]">Turbulensi</span>
+                            <span class="text-[#5E6573]">Turbulensi Udara</span>
                             <span id="displayTurbulence" class="font-bold text-[#FFC46D] font-mono">0.30</span>
                         </div>
                         <input id="sliderTurbulence" type="range" min="0" max="1" value="0.30" step="0.05" class="clean-slider">
@@ -158,47 +165,50 @@
                         </div>
                     </div>
 
-                    <!-- Burst Surge Button -->
+                    <!-- Indikator Metrik Khusus Standar Tier-IV & Inersia Termal (2x2 Grid) -->
+                    <div class="pt-3 border-t border-black/5 grid grid-cols-2 gap-2 text-[11px]">
+                        <div class="p-2 rounded-lg bg-[#EEFAEA] border border-[#A1E688]/30">
+                            <div class="text-[#1A5912] font-medium text-[10px]">Kelembapan RH</div>
+                            <div id="displayIndoorRH" class="font-black text-[#123B0A] font-mono text-xs mt-0.5">52% Safe</div>
+                        </div>
+                        <div class="p-2 rounded-lg bg-[#F4EDFF] border border-[#AF6EFF]/30">
+                            <div class="text-[#7928CA] font-medium text-[10px]">Containment</div>
+                            <div id="displayContainment" class="font-black text-[#7928CA] font-mono text-xs mt-0.5">SEALED (Tier-IV)</div>
+                        </div>
+                        <div class="p-2 rounded-lg bg-[#FFF7EC] border border-[#FFC46D]/30">
+                            <div class="text-[#92400E] font-medium text-[10px]">Inersia Termal</div>
+                            <div id="displayThermalLag" class="font-black text-[#B45309] font-mono text-xs mt-0.5">120s Headroom</div>
+                        </div>
+                        <div class="p-2 rounded-lg bg-[#EBF2FE] border border-[#3B82F6]/30">
+                            <div class="text-[#1D4ED8] font-medium text-[10px]">Tekanan Plenum</div>
+                            <div id="displayPlenumPressure" class="font-black text-[#1E40AF] font-mono text-xs mt-0.5">35 Pa Balanced</div>
+                        </div>
+                    </div>
+
+                    <!-- Burst Surge Button: Smart PDU Electrical Spike -->
                     <button id="btnSimulateSurge" class="btn-charcoal w-full mt-2">
                         <span>⚡</span>
-                        <span>Simulasikan Lonjakan (98%)</span>
+                        <span>Simulasikan Lonjakan Daya PDU (24 kW)</span>
+                    </button>
+
+                    <!-- Interactive Thermal Hotspot Test Button -->
+                    <button id="btnInjectHotspot" class="btn-charcoal w-full mt-2" style="background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%); border: 1.5px solid rgba(244, 63, 94, 0.4); color: #9F1239;">
+                        <span>🔥</span>
+                        <span id="btnHotspotLabel">Uji Hotspot Termal (+8°C ke Rak Terpilih)</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Card 2: Total Performance (Clean Bar Chart) -->
-            <div class="light-card p-5">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="text-xs font-bold text-[#181A1A]">Kinerja AI</div>
-                    <span id="perfPercentageText" class="text-xl font-black text-[#181A1A]">94.2%</span>
-                </div>
-
-                <!-- Mini Bar Graph -->
-                <div class="flex items-end justify-between gap-1.5 h-10 mt-3 pt-1">
-                    <div class="w-full bg-[#E5E7EB] rounded-t-sm h-[35%]"></div>
-                    <div class="w-full bg-[#E5E7EB] rounded-t-sm h-[50%]"></div>
-                    <div class="w-full bg-[#E5E7EB] rounded-t-sm h-[45%]"></div>
-                    <div class="w-full bg-[#E5E7EB] rounded-t-sm h-[65%]"></div>
-                    <div class="w-full bg-[#E5E7EB] rounded-t-sm h-[40%]"></div>
-                    <div class="w-full bg-[#AF6EFF] rounded-t-sm h-[85%]"></div>
-                    <div class="w-full bg-[#AF6EFF] rounded-t-sm h-[92%]"></div>
-                    <div class="w-full bg-[#A1E688] rounded-t-sm h-[95%]"></div>
-                    <div class="w-full bg-[#FFC46D] rounded-t-sm h-[60%]"></div>
-                    <div class="w-full bg-[#E5E7EB] rounded-t-sm h-[75%]"></div>
-                    <div class="w-full bg-[#AF6EFF] rounded-t-sm h-[94%]"></div>
-                    <div class="w-full bg-[#A1E688] rounded-t-sm h-[98%]"></div>
-                </div>
-            </div>
-
-            <!-- Card 3: AI Command & Telemetry Stream Log -->
-            <div class="light-card p-5">
+            <!-- Card 2: Live Telemetry Stream Log (Tinggi Pas & Seimbang) -->
+            <div class="light-card p-4 sm:p-5">
                 <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center gap-1.5">
                         <span class="w-2 h-2 rounded-full bg-[#AF6EFF] animate-ping"></span>
-                        <span class="text-xs font-bold text-[#181A1A]">Live Telemetry</span>
+                        <span class="text-xs font-bold text-[#181A1A] font-heading">Live Telemetry Stream</span>
                     </div>
+                    <span class="text-[10px] font-mono text-[#7A8293]">60 FPS</span>
                 </div>
-                <div id="aiDecisionStream" class="stream-box-light">
+                <div id="aiDecisionStream" class="stream-box-light" style="height: 335px; min-height: 280px;">
                     <!-- Populated dynamically by app.js -->
                 </div>
             </div>
@@ -208,19 +218,19 @@
         <!-- ═══════════════════════════════════════════════════════════
              KOLOM TENGAH: PIPELINE INTEGRASI, CANVAS & CAROUSEL (6 Kolom)
              ═══════════════════════════════════════════════════════════ -->
-        <div class="lg:col-span-8 xl:col-span-6 flex flex-col gap-4">
+        <div class="lg:col-span-6 flex flex-col gap-4">
 
-            <!-- PIPELINE INTEGRASI SISTEM TERTUTUP (Ringkas & Bersih) -->
+            <!-- PIPELINE INTEGRASI SISTEM TERTUTUP (Smart PDU Power-First Flow) -->
             <div class="pipeline-card">
                 <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-[#AF6EFF] animate-ping"></span>
-                        <span class="text-xs font-black uppercase tracking-wider text-[#181A1A]">
-                            Pipeline Integrasi AI
+                        <span class="text-xs font-bold uppercase tracking-wider text-[#181A1A] font-heading">
+                            Pipeline Non-Intrusif Smart PDU
                         </span>
                     </div>
                     <span class="text-[10px] font-mono text-[#1A5912] bg-[#A1E688]/30 px-2 py-0.5 rounded-full font-bold">
-                        Feedforward
+                        Thermal Lag 120s
                     </span>
                 </div>
 
@@ -233,8 +243,8 @@
                             1
                         </div>
                         <div>
-                            <div class="text-[10px] text-[#7A8293] font-bold uppercase">Antrean IT</div>
-                            <div class="font-extrabold text-[#181A1A] leading-tight">LLM 70B (95%)</div>
+                            <div class="text-[10px] text-[#7A8293] font-bold uppercase">Smart PDU (t=0)</div>
+                            <div class="font-extrabold text-[#181A1A] leading-tight">Daya 23.8 kW</div>
                         </div>
                     </div>
 
@@ -244,8 +254,8 @@
                             2
                         </div>
                         <div>
-                            <div class="text-[10px] text-[#7A8293] font-bold uppercase">PINN Solver</div>
-                            <div class="font-extrabold text-[#7928CA] leading-tight">Navier-Stokes (4ms)</div>
+                            <div class="text-[10px] text-[#7A8293] font-bold uppercase">Inersia Termal</div>
+                            <div class="font-extrabold text-[#7928CA] leading-tight">Jeda 120s (dP/dt)</div>
                         </div>
                     </div>
 
@@ -255,8 +265,8 @@
                             3
                         </div>
                         <div>
-                            <div class="text-[10px] text-[#7A8293] font-bold uppercase">Aktuator</div>
-                            <div class="font-extrabold text-[#181A1A] leading-tight">Louver -12° • Fan 78%</div>
+                            <div class="text-[10px] text-[#7A8293] font-bold uppercase">Aktuator VAV</div>
+                            <div id="pipelineActuatorText" class="font-extrabold text-[#181A1A] leading-tight">VAV Tile 95% • Fan 78%</div>
                         </div>
                     </div>
 
@@ -266,8 +276,8 @@
                             4
                         </div>
                         <div>
-                            <div class="text-[10px] text-[#7A8293] font-bold uppercase">Termal</div>
-                            <div class="font-extrabold text-[#123B0A] leading-tight">23.2°C (Stabil)</div>
+                            <div class="text-[10px] text-[#7A8293] font-bold uppercase">Termal CAC</div>
+                            <div class="font-extrabold text-[#123B0A] leading-tight">22.8°C (Stabil)</div>
                         </div>
                     </div>
 
@@ -275,20 +285,20 @@
             </div>
 
             <!-- THE HERO CANVAS CARD -->
-            <div class="light-card p-5 light-card-elevated">
+            <div class="light-card p-4 sm:p-5 light-card-elevated">
                 <div class="flex items-center justify-between gap-3 mb-3">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-7 h-7 rounded-lg bg-[#181A1A] text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                        <div class="w-7 h-7 rounded-lg bg-[#181A1A] text-white flex items-center justify-center font-bold text-xs shadow-sm font-heading">
                             01
                         </div>
-                        <h2 class="text-sm font-extrabold text-[#181A1A] uppercase tracking-wide">
-                            Ruang Server (8 Rak)
+                        <h2 class="text-sm font-bold text-[#181A1A] uppercase tracking-wide font-heading">
+                            Cold Aisle Containment (CAC) — 8 Rak AI Cluster
                         </h2>
                     </div>
                     <div class="flex items-center gap-2">
                         <button id="btnToggleAIVectors" class="px-2.5 py-1 rounded-full bg-white hover:bg-[#F3F4F8] border border-black/10 text-[#181A1A] text-[10px] font-bold tracking-wider transition-all shadow-sm flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-[#AF6EFF]"></span>
-                            <span>Laser Raycast</span>
+                            <span class="w-2 h-2 rounded-full bg-[#A1E688]"></span>
+                            <span>Active VAV Tiles CFD</span>
                         </button>
                         <span class="text-[10px] font-mono font-bold text-[#181A1A] bg-[#EAEAEF] px-2 py-0.5 rounded-full border border-black/5">
                             60 FPS
@@ -297,24 +307,28 @@
                 </div>
 
                 <!-- Simulation Canvas Frame -->
-                <div class="canvas-frame-light">
+                <div class="canvas-frame-light" style="height: 500px;">
                     <canvas id="simulationCanvas"></canvas>
                 </div>
 
-                <!-- Canvas Legend Chips (Minimalist) -->
+                <!-- Canvas Legend Chips (Standard Tier-3/Tier-4 Architecture) -->
                 <div class="mt-3.5 pt-3 border-t border-black/5 flex flex-wrap items-center justify-between text-[11px] text-[#5E6573] font-medium gap-2">
-                    <div class="flex flex-wrap items-center gap-3">
-                        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F4EDFF] border border-[#AF6EFF]/30 text-[#7928CA] font-semibold">
-                            <span class="w-2 h-2 rounded-full bg-[#AF6EFF] shadow-sm animate-pulse"></span>
-                            <span>Sinar Raycast AI</span>
-                        </div>
+                    <div class="flex flex-wrap items-center gap-2">
                         <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EEFAEA] border border-[#A1E688]/40 text-[#1A5912] font-semibold">
                             <span class="w-2 h-2 rounded-full bg-[#A1E688] shadow-sm"></span>
-                            <span>Target Pre-Cooling</span>
+                            <span>Active VAV Tiles (0%–100%)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F4EDFF] border border-[#AF6EFF]/30 text-[#7928CA] font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-[#AF6EFF] shadow-sm animate-pulse"></span>
+                            <span>Underfloor Targeted Airflow</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-black/10 text-[#181A1A] font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-[#181A1A] shadow-sm"></span>
+                            <span>Cold Aisle Containment (Tier-IV)</span>
                         </div>
                         <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFF7EC] border border-[#FFC46D]/40 text-[#92400E] font-semibold">
                             <span class="w-2 h-2 rounded-full bg-[#FFC46D] shadow-sm"></span>
-                            <span>Exhaust Panas</span>
+                            <span>Hot Aisle Return</span>
                         </div>
                     </div>
                 </div>
@@ -323,9 +337,10 @@
             <!-- BOTTOM VEHICLE / RACK THUMBNAIL CAROUSEL -->
             <div class="light-card p-4">
                 <div class="flex items-center justify-between mb-2">
-                    <div class="text-xs font-bold text-[#181A1A]">
-                        Status 8 Rak Server
+                    <div class="text-xs font-bold text-[#181A1A] font-heading">
+                        Status Telemetri Smart PDU 8 Rak Server (AI Inference 15-25 kW/rak)
                     </div>
+                    <span class="text-[10px] text-[#7A8293] font-mono">PDU-A1 s/d PDU-B4</span>
                 </div>
 
                 <!-- Horizontal Carousel -->
@@ -337,11 +352,11 @@
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════
-             KOLOM KANAN: 3 PASTEL WIDGETS + JOB SCHEDULER (3 Kolom)
+             KOLOM KANAN: 3 WIDGETS HARMONIS + SMART PDU FORECAST (3 Kolom)
              ═══════════════════════════════════════════════════════════ -->
-        <div class="lg:col-span-12 xl:col-span-3 flex flex-col gap-4">
+        <div class="lg:col-span-3 flex flex-col gap-4">
 
-            <!-- WIDGET 1: MINT FUEL / COOLING WAVE BANNER -->
+            <!-- WIDGET 1: MINT FUEL / COOLING WAVE BANNER & PUE METRIC -->
             <div class="card-wave-mint">
                 <div class="wave-banner-mint">
                     <div class="flex items-center justify-between">
@@ -349,53 +364,45 @@
                             ❄️
                         </div>
                         <span class="text-[10px] font-mono font-bold text-[#123B0A] bg-white/60 px-2 py-0.5 rounded-full">
-                            CRAC Variable
+                            Underfloor VAV Plenum
                         </span>
                     </div>
                     <svg class="wave-svg" viewBox="0 0 500 150" preserveAspectRatio="none">
                         <path d="M0.00,49.98 C149.99,150.00 349.81,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"></path>
                     </svg>
                 </div>
-                <div class="p-5 pt-3">
-                    <div class="text-2xl font-black text-[#181A1A] tracking-tight">18.5 kCFM</div>
-                    <div class="text-xs font-bold text-[#1A5912] mt-0.5">93.3% Aliran Optimal</div>
-                    <div class="text-[11px] text-[#7A8293] mt-2 font-medium">ASHRAE A1 Compliant • 22.4°C</div>
+                <div class="p-4 pt-2">
+                    <div class="text-2xl font-bold text-[#181A1A] tracking-tight font-heading">18.5 kCFM</div>
+                    <div class="text-xs font-bold text-[#1A5912] mt-0.5">93.3% Debit Aliran Optimal</div>
+                    <div class="text-[11px] text-[#7A8293] mt-1.5 font-medium">ASHRAE TC 9.9 • 52% RH • 22.8°C</div>
+
+                    <!-- PUE & Financial Comparison (DCI / BDx Tier-IV Benchmark) -->
+                    <div class="mt-3 pt-2.5 border-t border-black/5 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-[#5E6573] font-medium">PUE Efisiensi</span>
+                            <span class="font-extrabold text-[#123B0A] bg-[#EEFAEA] px-2 py-0.5 rounded-full border border-[#A1E688]/40 font-mono">1.23 vs 1.45</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-[#5E6573] font-medium">Estimasi Hemat OPEX</span>
+                            <span class="font-bold text-[#1A5912] font-mono">Rp 1,42 Miliar/th</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- WIDGET 2: ENGINE LOAD RPM / RADIAL GAUGE -->
-            <div class="card-radial-gauge">
-                <div class="text-xs font-bold text-[#181A1A]">Beban Komputasi</div>
-
-                <div class="gauge-container">
-                    <svg class="gauge-svg" viewBox="0 0 170 95">
-                        <!-- Background Track -->
-                        <path d="M 20 85 A 65 65 0 0 1 150 85" fill="none" stroke="#F0F2F6" stroke-width="12" stroke-linecap="round"/>
-                        <!-- Amber Value Arc -->
-                        <path id="gaugePathFill" d="M 20 85 A 65 65 0 0 1 138 42" fill="none" stroke="#FFC46D" stroke-width="12" stroke-linecap="round"/>
-                    </svg>
-                    <div id="gaugeValText" class="gauge-value-text">2,850</div>
-                </div>
-
-                <div class="flex items-center justify-between text-[11px] text-[#7A8293] font-mono mt-3 pt-2 border-t border-black/5">
-                    <span>Min: 800</span>
-                    <span class="text-[#FFC46D] font-bold">Peak: 3,400</span>
-                </div>
-            </div>
-
-            <!-- WIDGET 3: ROUTE REVENUE / LAVENDER CURVE CHART -->
-            <div class="card-revenue-chart">
+            <!-- WIDGET 2: KOMBINASI HARMONIS BEBAN DAYA & PREDIKSI SUHU -->
+            <div class="card-revenue-chart p-4">
                 <div class="flex items-center justify-between mb-1">
-                    <div class="text-xs font-bold text-[#181A1A]">Prediksi Suhu</div>
-                    <span class="text-[11px] text-[#AF6EFF] font-bold">T-15m</span>
+                    <div class="text-xs font-bold text-[#181A1A] font-heading">Prediksi Termal Forward</div>
+                    <span class="text-[11px] text-[#AF6EFF] font-bold">Tren 5-15m</span>
                 </div>
                 <div class="flex items-baseline gap-2">
-                    <span id="chartHighlightTemp" class="text-2xl font-black text-[#181A1A]">23.2°C</span>
-                    <span id="chartHighlightDelta" class="text-xs font-bold text-[#A1E688]">Stabil (-24.8°C)</span>
+                    <span id="chartHighlightTemp" class="text-2xl font-bold text-[#181A1A] font-heading">22.8°C</span>
+                    <span id="chartHighlightDelta" class="text-xs font-bold text-[#A1E688]">Stabil (-25.2°C)</span>
                 </div>
 
                 <!-- Smooth Lavender Wavy Curve SVG -->
-                <div class="lavender-chart-area">
+                <div class="lavender-chart-area" style="height: 75px; margin-top: 6px;">
                     <svg class="lavender-chart-svg" viewBox="0 0 240 85">
                         <defs>
                             <linearGradient id="purpleAreaGrad" x1="0" y1="0" x2="0" y2="1">
@@ -416,19 +423,19 @@
                     </svg>
                 </div>
                 <div class="flex items-center justify-between text-[9px] font-mono mt-1 pt-1 border-t border-black/5 text-[#7A8293]">
-                    <span class="text-[#7928CA] font-bold">● AI: 23.2°C</span>
+                    <span class="text-[#7928CA] font-bold">● AI: 22.8°C</span>
                     <span class="text-[#F43F5E]">--- Konvensional: 48°C</span>
                 </div>
             </div>
 
-            <!-- WIDGET 4: JOB SCHEDULER (Ringkas & Bersih) -->
-            <div class="light-card p-5">
+            <!-- WIDGET 3: SMART PDU TELEMETRY & POWER FORECAST (Tinggi Scrollable Pas) -->
+            <div class="light-card p-4">
                 <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-xs font-bold text-[#181A1A]">Antrean Tugas</h4>
-                    <span class="badge-mint text-[10px] py-0.5 px-2">● Auto</span>
+                    <h4 class="text-xs font-bold text-[#181A1A] font-heading">Smart PDU Telemetry & Forecast</h4>
+                    <span class="badge-mint text-[9px] py-0.5 px-2">● Non-Intrusif</span>
                 </div>
                 <div id="jobSchedulerContainer" class="space-y-2 max-h-[380px] overflow-y-auto pr-1">
-                    <!-- Populated dynamically by app.js -->
+                    <!-- Populated dynamically by app.js updateSmartPDUTelemetryUI() -->
                 </div>
             </div>
 
@@ -436,11 +443,22 @@
 
     </main>
 
+    <!-- Sleek In-App Toast Notification -->
+    <div id="toastNotification" class="toast-notification">
+        <div class="w-8 h-8 rounded-xl bg-[#AF6EFF]/15 text-[#7928CA] flex items-center justify-center font-bold text-sm shrink-0">
+            ⚡
+        </div>
+        <div class="text-xs">
+            <div id="toastTitle" class="font-black text-[#181A1A]">Smart PDU Sensing Notice</div>
+            <div id="toastMessage" class="text-[#5E6573] mt-0.5 leading-relaxed">Lonjakan daya terdeteksi di level PDU. Pre-cooling VAV aktif dalam jendela inersia termal 120s.</div>
+        </div>
+    </div>
+
     <!-- ═══════════════════════════════════════════════════════════
          MODULAR JAVASCRIPT IMPORTS
          ═══════════════════════════════════════════════════════════ -->
-    <script src="physics.js"></script>
-    <script src="app.js"></script>
+    <script src="physics.js?v=3.1"></script>
+    <script src="app.js?v=3.1"></script>
 
 </body>
 </html>

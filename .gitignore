@@ -13,3 +13,13 @@ desktop.ini
 *.log
 npm-debug.log*
 yarn-debug.log*
+
+# Office lock & temp files
+~$*
+*.tmp
+
+# Scratch & Scrap artifacts
+majuon_*
+snippet.js
+test_math.docx
+i18n.js

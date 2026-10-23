@@ -57,7 +57,14 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* ═══════════════════════════════════════════════════════════════════
+     SISTEM 2 FONT TYPOGRAPHY TOKENS
+     1. Heading: Space Grotesk (Sans-Serif Geometris Berkarakter Kuat)
+     2. Body Text: Inter (Sans-Serif Bersih, Netral, & Modern)
+     3. Telemetri Numerik: JetBrains Mono (Monospace Presisi Data Center)
+     ═══════════════════════════════════════════════════════════════════ */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -76,6 +83,26 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Heading Typography — Space Grotesk (Geometris Tegas) */
+h1, h2, h3, h4, h5, h6,
+.font-heading,
+.card-header-title,
+.heading-title,
+.brand-title {
+  font-family: var(--font-heading) !important;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+/* Body Text Typography — Inter (Bersih & Mudah Dibaca) */
+p, span, button, input, select, label, .font-body {
+  font-family: var(--font-sans);
+}
+
+.font-mono {
+  font-family: var(--font-mono) !important;
 }
 
 /* Custom Minimalist Scrollbars */
@@ -479,21 +506,21 @@ body {
 .bottom-carousel-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   overflow-x: auto;
-  padding: 6px 2px 14px;
+  padding: 4px 2px 10px;
   scroll-behavior: smooth;
 }
 
 .rack-thumb-card {
-  min-width: 185px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1.5px solid transparent;
-  border-radius: var(--radius-lg);
-  padding: 12px 14px;
+  min-width: 156px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(24, 26, 26, 0.06);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
   cursor: pointer;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
   position: relative;
   flex-shrink: 0;
 }
@@ -501,13 +528,14 @@ body {
 .rack-thumb-card:hover {
   background: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  border-color: rgba(175, 110, 255, 0.3);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
 }
 
 .rack-thumb-card.selected {
   background: #FFFFFF;
   border-color: var(--c-purple);
-  box-shadow: 0 8px 26px rgba(175, 110, 255, 0.16), 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 24px rgba(175, 110, 255, 0.18), 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -516,7 +544,7 @@ body {
 .canvas-frame-light {
   position: relative;
   width: 100%;
-  height: 480px;
+  height: 500px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: linear-gradient(180deg, #F9FAFD 0%, #EEF1F8 100%);
@@ -572,21 +600,46 @@ body {
   100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
 }
 
-/* Stream Terminal Box (Light Theme) — Extended Downwards */
+/* Stream Terminal Box (Light Theme) — Balanced Height */
 .stream-box-light {
   background: var(--bg-card-muted);
   border: 1px solid rgba(24, 26, 26, 0.06);
   border-radius: var(--radius-md);
-  padding: 12px;
+  padding: 10px;
   font-family: var(--font-mono);
   font-size: 11px;
-  height: 380px;
-  min-height: 320px;
-  max-height: 480px;
+  height: 335px;
+  min-height: 280px;
+  max-height: 420px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
+}
+
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  background: #FFFFFF;
+  border: 1px solid rgba(175, 110, 255, 0.35);
+  box-shadow: 0 16px 40px -8px rgba(24, 26, 26, 0.18), 0 4px 12px rgba(175, 110, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  max-width: 420px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transform: translateY(120%);
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.toast-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .stream-item {
