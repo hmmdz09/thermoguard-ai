@@ -93,6 +93,8 @@ class ThermoGuardApp {
         this.simTimeSeconds = 0;
         this.lastTimestamp = 0;
         this.aiLogTimer = 0;
+        this.telemetryIntervalTimer = 0;
+        this.telemetryStep = 0;
 
         this.render = this.render.bind(this);
         this.handleResize = this.handleResize.bind(this);
@@ -109,8 +111,12 @@ class ThermoGuardApp {
         this.updateSmartPDUTelemetryUI();
         this.updateMetricsUI();
 
+        // Inisialisasi Log Awal Diagnostik DCIM & Smart PDU
+        this.addStreamLog('SYSTEM_BOOT', 'stream-tag-purple', 'DCIM Engine terhubung ke 8 unit Rack PDU via Modbus-TCP (Polling 10ms).');
+        this.addStreamLog('CAC_ENCLOSURE', 'stream-tag-blue', 'Cold Aisle Containment terisolasi Tier-IV: Tekanan statis plenum 35.0 Pa stabil.');
+        this.addStreamLog('PINN_MODEL', 'stream-tag-purple', 'Physics-Informed Neural Network online: Jendela inersia termal 120s aktif.');
         this.addStreamLog('SMART_PDU', 'stream-tag-mint', 'Smart PDU Power Sensing aktif: 8 rak termonitor non-intrusif pada level PDU.');
-        this.addStreamLog('THERMAL_LAG', 'stream-tag-purple', 'Inersia termal terdeteksi: Headroom 120 detik dimanfaatkan untuk Pre-Cooling VAV.');
+        this.addStreamLog('VAV_ACTUATORS', 'stream-tag-mint', '8 motor aktuator VAV ubin berpori tersinkronisasi (Respon dinamik 0-100%).');
 
         requestAnimationFrame(this.render);
     }
@@ -444,9 +450,120 @@ class ThermoGuardApp {
             <span class="stream-msg">${message}</span>
         `;
         logBox.prepend(line);
+        logBox.scrollTop = 0;
 
-        while (logBox.children.length > 25) {
+        while (logBox.children.length > 35) {
             logBox.removeChild(logBox.lastChild);
+        }
+    }
+
+    /**
+     * PERIODIC REAL-TIME TELEMETRY LOG GENERATOR
+     * Menghasilkan log telemetri hidup yang dinamis, kontekstual, dan bervariasi setiap ~3.2 detik
+     * mencakup: PDU Sensing, VAV Tile Modulation, Inersia Termal, Kipas PWM, Audit ASHRAE, & PUE.
+     */
+    generatePeriodicTelemetryLog() {
+        // Prioritas 1: Jika lonjakan daya surge sedang aktif
+        if (this.physics.surgeActive) {
+            const highRack = this.physics.racks.find(r => r.powerDrawKW >= 18.0) || this.physics.racks[1];
+            this.addStreamLog(
+                'SURGE_TRACK',
+                'stream-tag-amber',
+                `Lonjakan PDU ${highRack.name}: Daya ${highRack.powerDrawKW.toFixed(1)} kW (Beban GPU 100%). AI membuka katup VAV ${highRack.damperOpening.toFixed(0)}%!`
+            );
+            return;
+        }
+
+        // Prioritas 2: Jika ada hotspot suhu tinggi (temp >= 26.5°C)
+        const hotRack = this.physics.racks.find(r => r.temp >= 26.5);
+        if (hotRack) {
+            this.addStreamLog(
+                'HOTSPOT_DEFENSE',
+                'stream-tag-rose',
+                `Mitigasi Panas ${hotRack.name}: Suhu ${hotRack.temp.toFixed(1)}°C terdeteksi. Blower dinaikkan ke ${hotRack.fanPWM.toFixed(0)}% (~${Math.round(hotRack.fanPWM * 142)} RPM)!`
+            );
+            return;
+        }
+
+        // Rotasi Telemetri Standar (6 Jenis Event Siklis yang Relevan)
+        const step = this.telemetryStep % 6;
+        this.telemetryStep++;
+
+        switch (step) {
+            case 0: {
+                // 1. SMART PDU POWER GRADIENT & FORECAST SENSING
+                const targetIdx = (this.telemetryStep % 2 === 0) ? 1 : 2; // Fokus ke AI Inference Node Rak A2 / A3
+                const rack = this.physics.racks[targetIdx];
+                const gradSign = rack.powerGradientKWps >= 0 ? '+' : '';
+                this.addStreamLog(
+                    'PDU_SENSE',
+                    'stream-tag-mint',
+                    `Smart PDU ${rack.name}: ${rack.powerDrawKW.toFixed(1)} kW (${gradSign}${rack.powerGradientKWps.toFixed(2)} kW/s) • Proyeksi 10m: ${rack.powerForecastKW.toFixed(1)} kW.`
+                );
+                break;
+            }
+            case 1: {
+                // 2. ACTIVE VAV PERFORATED FLOOR TILE MODULATION
+                const rack = this.physics.racks[this.selectedRackIndex >= 0 ? this.selectedRackIndex : 1];
+                if (this.physics.mode === 'ai') {
+                    const cfm = Math.round(rack.damperOpening * 4.2);
+                    this.addStreamLog(
+                        'VAV_DAMPER',
+                        'stream-tag-purple',
+                        `VAV Tile ${rack.name} modulasi ke ${rack.damperOpening.toFixed(0)}% (~${cfm} CFM) • Mengisolasi Cold Aisle pada ${rack.tempTarget || 22.5}°C.`
+                    );
+                } else {
+                    this.addStreamLog(
+                        'VAV_DAMPER',
+                        'stream-tag-amber',
+                        `VAV Tile ${rack.name} terkunci statis 40.0% (Konvensional) • Pendinginan pasif tanpa kompensasi beban PDU.`
+                    );
+                }
+                break;
+            }
+            case 2: {
+                // 3. THERMAL INERTIA & HEATSINK HEADROOM
+                const rack = this.physics.racks[1]; // Rak A2
+                const headroom = rack.thermalHeadroomSec || 104;
+                this.addStreamLog(
+                    'THERMAL_LAG',
+                    'stream-tag-amber',
+                    `Inersia Massa Heatsink ${rack.name}: Sisa headroom ${headroom.toFixed(0)}s dieksploitasi untuk mitigasi pra-dingin.`
+                );
+                break;
+            }
+            case 3: {
+                // 4. CHASSIS BLOWER SPEED & RPM MODULATION
+                const rack = this.physics.racks[(this.telemetryStep + 2) % 8];
+                const rpm = Math.round(rack.fanPWM * 142);
+                this.addStreamLog(
+                    'FAN_PWM',
+                    'stream-tag-blue',
+                    `Chassis Blower ${rack.name}: PWM ${rack.fanPWM.toFixed(0)}% (~${(rpm / 1000).toFixed(1)}k RPM) • Menjaga kesetimbangan termal sasis.`
+                );
+                break;
+            }
+            case 4: {
+                // 5. ASHRAE TC 9.9 & ENVIRONMENTAL COMPLIANCE AUDIT
+                const avgTemp = (this.physics.racks.reduce((acc, r) => acc + r.temp, 0) / 8).toFixed(1);
+                this.addStreamLog(
+                    'ASHRAE_AUDIT',
+                    'stream-tag-mint',
+                    `Audit Lingkungan CAC: Suhu rerata lorong dingin ${avgTemp}°C | Plenum ${this.physics.plenumPressurePa} Pa | RH ${this.physics.indoorRH.toFixed(0)}% (Standar A1 Safe).`
+                );
+                break;
+            }
+            case 5: {
+                // 6. ENERGY EFFICIENCY & PUE TRACKING
+                const isAI = (this.physics.mode === 'ai');
+                const pue = isAI ? '1.24' : '1.45';
+                const tag = isAI ? 'stream-tag-mint' : 'stream-tag-amber';
+                const desc = isAI 
+                    ? 'PUE Efisien 1.24 • Penghematan kompresor pendingin 31.4% (Pre-Cooling aktif).' 
+                    : 'PUE Boros 1.45 • Terjadi overcooling berlebih pada suplai udara 11.5°C.';
+                this.addStreamLog('ENERGY_PUE', tag, `Efisiensi Energi: ${desc}`);
+                break;
+            }
         }
     }
 
@@ -688,6 +805,13 @@ class ThermoGuardApp {
             this.updateMetricsUI();
             this.updateSmartPDUTelemetryUI();
             this.aiLogTimer = 0;
+        }
+
+        // Periodic Live Telemetry Stream Logging (Every ~3.2 seconds)
+        this.telemetryIntervalTimer += dt;
+        if (this.telemetryIntervalTimer >= 3.2) {
+            this.telemetryIntervalTimer = 0;
+            this.generatePeriodicTelemetryLog();
         }
 
         const ctx = this.ctx;

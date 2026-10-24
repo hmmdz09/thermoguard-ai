@@ -696,6 +696,28 @@ p, span, button, input, select, label, .font-body {
   flex-shrink: 0;
 }
 
+.stream-tag-blue {
+  background: #EBF2FE;
+  color: #1D4ED8;
+  font-weight: 700;
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stream-tag-rose {
+  background: #FFE4E6;
+  color: #9F1239;
+  font-weight: 700;
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .stream-msg {
   color: #181A1A;
   font-size: 11px;
