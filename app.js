@@ -104,6 +104,21 @@ class ThermoGuardApp {
         this.handleResize();
         window.addEventListener('resize', this.handleResize);
 
+        // ResizeObserver agar selalu update tajam saat layout browser berubah
+        if (window.ResizeObserver && this.canvas && this.canvas.parentElement) {
+            this.resizeObserver = new ResizeObserver(() => {
+                this.handleResize();
+            });
+            this.resizeObserver.observe(this.canvas.parentElement);
+        }
+
+        // Pastikan render ulang begitu web font Google Fonts selesai diunduh
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                this.handleResize();
+            });
+        }
+
         this.initParticles();
         this.initStreamlines();
         this.setupEventListeners();
@@ -122,15 +137,31 @@ class ThermoGuardApp {
     }
 
     handleResize() {
+        if (!this.canvas || !this.canvas.parentElement) return;
         const rect = this.canvas.parentElement.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        this.canvasWidth = rect.width;
-        this.canvasHeight = 500;
+        // Super-sampling Retina (DPR minimal 2x) menghilangkan blur di semua monitor
+        const dpr = Math.max(window.devicePixelRatio || 1, 2);
+        const cssWidth = Math.floor(rect.width) || 800;
+        const cssHeight = 500;
 
-        this.canvas.width = this.canvasWidth * dpr;
-        this.canvas.height = this.canvasHeight * dpr;
+        this.canvasWidth = cssWidth;
+        this.canvasHeight = cssHeight;
+
+        // Buffer internal canvas dengan resolusi tinggi
+        this.canvas.width = Math.round(cssWidth * dpr);
+        this.canvas.height = Math.round(cssHeight * dpr);
+
+        // Kunci ukuran CSS agar pixel matching 1:1 tanpa peregangan blur
+        this.canvas.style.width = cssWidth + 'px';
+        this.canvas.style.height = cssHeight + 'px';
+
         this.ctx.resetTransform();
-        this.ctx.scale(dpr, dpr);
+        this.ctx.scale(this.canvas.width / cssWidth, this.canvas.height / cssHeight);
+        this.ctx.imageSmoothingEnabled = true;
+        this.ctx.imageSmoothingQuality = 'high';
+        if ('textRendering' in this.ctx) {
+            this.ctx.textRendering = 'geometricPrecision';
+        }
     }
 
     initParticles() {
@@ -175,10 +206,10 @@ class ThermoGuardApp {
         const isTarget = (this.physics.mode === 'ai' && (rack.isAIPriority || rack.temp >= 25.0 || rack.powerDrawKW >= 14.0));
 
         // Kecepatan semburan udara dingin langsung terhubung ke RPM kipas server & bukaan katup ubin
-        const jetSpeed = 1.6 + (fanRatio * 4.4); // Kipas 40% -> 3.3 px/f, Kipas 98% -> 5.9 px/f!
+        const jetSpeed = 1.6 + (fanRatio * 4.4);
         const baseVy = isRowA ? jetSpeed : -jetSpeed;
         const startY = isRowA ? (tCoord.y + tCoord.h - 1) : (tCoord.y + 1);
-        const endY = isRowA ? 310 : 180;
+        const endY = isRowA ? 314 : 186;
         const progress = randomizeProgress ? Math.random() : 0;
         const currentY = startY + progress * (endY - startY);
 
@@ -239,22 +270,23 @@ class ThermoGuardApp {
         const col = index % 4; // 0, 1, 2, 3
         const row = Math.floor(index / 4); // 0 = Baris A (Depan / Bawah), 1 = Baris B (Belakang / Atas)
 
-        const startX = 124;
-        const totalAvailWidth = Math.max(260, cw - startX - 22);
+        const startX = 120;
+        const totalAvailWidth = Math.max(260, cw - startX - 24);
         const colGap = totalAvailWidth / 4;
 
-        const rw = Math.min(84, Math.max(54, colGap - 14));
-        const x = startX + col * colGap + (colGap - rw) / 2;
+        // Snapped integer pixel dimensions
+        const rw = Math.round(Math.min(90, Math.max(64, colGap - 16)));
+        const x = Math.round(startX + col * colGap + (colGap - rw) / 2);
 
         let y, h;
         if (row === 0) {
             // Baris A (Depan / Bawah): Di bawah lorong dingin CAC
-            y = 310;
-            h = 136;
+            y = 314;
+            h = 150;
         } else {
             // Baris B (Belakang / Atas): Di atas lorong dingin CAC
-            y = 44;
-            h = 136;
+            y = 36;
+            h = 150;
         }
 
         return { x, y, w: rw, h, row, col };
@@ -271,18 +303,18 @@ class ThermoGuardApp {
             // Ubin Baris A: Berada di lorong dingin, tepat di atas sisi atas rak Baris A
             return {
                 x: rCoord.x,
-                y: 272,
+                y: 278,
                 w: rCoord.w,
-                h: 26,
+                h: 28,
                 isRowA: true
             };
         } else {
             // Ubin Baris B: Berada di lorong dingin, tepat di bawah sisi bawah rak Baris B
             return {
                 x: rCoord.x,
-                y: 192,
+                y: 194,
                 w: rCoord.w,
-                h: 26,
+                h: 28,
                 isRowA: false
             };
         }
@@ -878,22 +910,22 @@ class ThermoGuardApp {
         // ═══════════════════════════════════════════════════════════════
         // COLD AISLE CONTAINMENT (CAC) PHYSICAL GLASS ENCLOSURE (Tier-IV)
         // ═══════════════════════════════════════════════════════════════
-        const startX = 124;
-        const totalAvailWidth = Math.max(260, cw - startX - 22);
+        const startX = 120;
+        const totalAvailWidth = Math.max(260, cw - startX - 24);
         const cacX = startX - 10;
-        const cacY = 186;
-        const cacW = totalAvailWidth + 4;
-        const cacH = 118;
+        const cacY = 190;
+        const cacW = Math.round(totalAvailWidth + 4);
+        const cacH = 120;
 
         // 1. Underfloor Plenum Pressurized Conduit (From CRAC Discharge to Subfloor Tiles)
-        const plenumX = 106;
+        const plenumX = 100;
         const plenumW = cacW + (cacX - plenumX);
-        const plenumY = 222;
-        const plenumH = 46;
+        const plenumY = 224;
+        const plenumH = 52;
 
         ctx.save();
         const plenumGrad = ctx.createLinearGradient(plenumX, 0, plenumX + plenumW, 0);
-        plenumGrad.addColorStop(0, 'rgba(6, 182, 212, 0.10)');
+        plenumGrad.addColorStop(0, 'rgba(6, 182, 212, 0.12)');
         plenumGrad.addColorStop(0.5, 'rgba(161, 230, 136, 0.08)');
         plenumGrad.addColorStop(1, 'rgba(6, 182, 212, 0.06)');
         ctx.fillStyle = plenumGrad;
@@ -901,11 +933,12 @@ class ThermoGuardApp {
         ctx.fill();
 
         // Hot Aisle Return Zone Identifiers (Outside CAC - Top & Bottom)
-        ctx.fillStyle = 'rgba(24, 26, 26, 0.40)';
-        ctx.font = '700 8px "Space Grotesk", sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = 'rgba(24, 26, 26, 0.55)';
+        ctx.font = '700 9px "Space Grotesk", sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText('▲ HOT AISLE RETURN PLENUM • BARIS B EXHAUST (38.0°C)', startX + 6, 32);
-        ctx.fillText('▼ HOT AISLE RETURN PERIMETER • BARIS A EXHAUST (38.0°C)', startX + 6, 466);
+        ctx.fillText('▲ HOT AISLE RETURN PLENUM • BARIS B EXHAUST (38.0°C)', startX, 20);
+        ctx.fillText('▼ HOT AISLE RETURN PERIMETER • BARIS A EXHAUST (38.0°C)', startX, 482);
 
         // 2. Contained Cold Corridor Floor Area (Clean Translucent Tempered Glass)
         const cacGrad = ctx.createLinearGradient(cacX, 0, cacX + cacW, 0);
@@ -1008,21 +1041,22 @@ class ThermoGuardApp {
         ctx.beginPath();
         ctx.arc(doorX + 6, doorY + 18, 2.0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.font = '700 5px "JetBrains Mono"';
+        ctx.font = '700 7px "JetBrains Mono", monospace';
         ctx.fillStyle = '#FFFFFF';
         ctx.textAlign = 'center';
-        ctx.fillText('RFID', doorX + 6, doorY + 26);
+        ctx.fillText('RFID', doorX + 6, doorY + 27);
 
         // 6. Directional Airflow Floor Markers (Center Walking Aisle - Subtle & Non-intrusive)
         const markerCount = 5;
         const markerStep = (cacW - 80) / markerCount;
         for (let m = 0; m < markerCount; m++) {
-            const mx = cacX + 50 + m * markerStep;
-            const my = cacY + cacH / 2;
-            ctx.fillStyle = 'rgba(175, 110, 255, 0.22)';
-            ctx.font = '700 8px "Space Grotesk", sans-serif';
+            const mx = Math.round(cacX + 50 + m * markerStep);
+            const my = 250;
+            ctx.fillStyle = 'rgba(175, 110, 255, 0.32)';
+            ctx.font = '700 10px "Space Grotesk", sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('▷', mx, my + 3);
+            ctx.textBaseline = 'middle';
+            ctx.fillText('▷', mx, my);
         }
 
         ctx.restore();
@@ -1030,13 +1064,10 @@ class ThermoGuardApp {
         // ═══════════════════════════════════════════════════════════════
         // ENTERPRISE PRECISION CRAH / CRAC COOLING UNIT (Schneider / Vertiv Liebert Style)
         // ═══════════════════════════════════════════════════════════════
-        // ═══════════════════════════════════════════════════════════════
-        // CRAH UNIT (Clean & Minimalist — Hanya Nama Sesuai Permintaan)
-        // ═══════════════════════════════════════════════════════════════
-        const acX = 16;
-        const acY = 44;
-        const acW = 80;
-        const acH = ch - 88; // 412px
+        const acX = 14;
+        const acY = 36;
+        const acW = 86;
+        const acH = 428;
 
         // 1. Cabinet Body
         ctx.save();
@@ -1056,7 +1087,7 @@ class ThermoGuardApp {
         ctx.stroke();
 
         // 2. Header: Nama CRAH Unit
-        const hdrH = 28;
+        const hdrH = 26;
         ctx.fillStyle = '#181A1A';
         this.drawRoundedRect(ctx, acX + 4, acY + 4, acW - 8, hdrH, 6);
         ctx.fill();
@@ -1064,23 +1095,57 @@ class ThermoGuardApp {
         // Active Status LED Dot
         ctx.fillStyle = '#A1E688';
         ctx.beginPath();
-        ctx.arc(acX + 13, acY + 4 + hdrH / 2, 2.5, 0, Math.PI * 2);
+        ctx.arc(acX + 13, acY + 4 + 13, 2.5, 0, Math.PI * 2);
         ctx.fill();
 
         // Teks Nama
+        ctx.textBaseline = 'middle';
         ctx.fillStyle = '#FFFFFF';
-        ctx.font = '700 9px "Space Grotesk", sans-serif';
+        ctx.font = '700 10px "Space Grotesk", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('CRAH UNIT 01', acX + acW / 2 + 4, acY + 4 + 17.5);
+        ctx.fillText('CRAH UNIT 01', Math.round(acX + acW / 2 + 5), acY + 4 + 13);
 
         // 3. Interior Clean Panel (Minimalist Cabinet)
         ctx.fillStyle = '#F8FAFC';
-        this.drawRoundedRect(ctx, acX + 6, acY + 38, acW - 12, acH - 44, 6);
+        this.drawRoundedRect(ctx, acX + 6, acY + 34, acW - 12, acH - 40, 6);
         ctx.fill();
         ctx.strokeStyle = 'rgba(24, 26, 26, 0.06)';
         ctx.lineWidth = 1;
-        this.drawRoundedRect(ctx, acX + 6, acY + 38, acW - 12, acH - 44, 6);
+        this.drawRoundedRect(ctx, acX + 6, acY + 34, acW - 12, acH - 40, 6);
         ctx.stroke();
+
+        // 4. Precision Cooling Fins / Louvers
+        const louverStartY = acY + 40;
+        const louverCount = 8;
+        const louverStep = 18;
+        ctx.fillStyle = '#EEF2F7';
+        for (let l = 0; l < louverCount; l++) {
+            const ly = louverStartY + l * louverStep;
+            this.drawRoundedRect(ctx, acX + 8, ly, acW - 16, 10, 3);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(24, 26, 26, 0.05)';
+            ctx.stroke();
+        }
+
+        // 5. Chilled Supply Air Telemetry Badge
+        const supplyY = acY + acH - 58;
+        ctx.fillStyle = this.physics.mode === 'ai' ? '#EEFAEA' : '#FFF7EC';
+        this.drawRoundedRect(ctx, acX + 8, supplyY, acW - 16, 48, 6);
+        ctx.fill();
+        ctx.strokeStyle = this.physics.mode === 'ai' ? '#A1E688' : '#FFC46D';
+        ctx.lineWidth = 1;
+        this.drawRoundedRect(ctx, acX + 8, supplyY, acW - 16, 48, 6);
+        ctx.stroke();
+
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = this.physics.mode === 'ai' ? '#15803D' : '#B45309';
+        ctx.font = '700 7px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('SUPLAI CRAC', acX + acW / 2, supplyY + 14);
+
+        const supTemp = this.physics.mode === 'ai' ? '15.0°C' : '11.5°C';
+        ctx.font = '800 13px "JetBrains Mono", monospace';
+        ctx.fillText(supTemp, acX + acW / 2, supplyY + 32);
     }
 
     /**
@@ -1108,49 +1173,44 @@ class ThermoGuardApp {
             ctx.stroke();
 
             // 2. Perforated Micro-Holes (HANYA di Sisi Kiri & Kanan, Tanpa Menabrak Lencana)
-            const holeY1 = tCoord.y + 7.5;
-            const holeY2 = tCoord.y + 18.5;
+            const holeY1 = Math.round(tCoord.y + 9);
+            const holeY2 = Math.round(tCoord.y + 19);
             const holeRadius = 1.4;
 
-            ctx.fillStyle = isTarget ? '#16A34A' : '#64748B';
+            ctx.fillStyle = isTarget ? '#16A34A' : '#94A3B8';
 
-            // 4 lubang di sisi kiri (2 kolom x 2 baris)
-            [-12, -5].forEach(dx => {
-                const hx = tCoord.x + 18 + dx;
-                ctx.beginPath();
-                ctx.arc(hx, holeY1, holeRadius, 0, Math.PI * 2);
-                ctx.arc(hx, holeY2, holeRadius, 0, Math.PI * 2);
-                ctx.fill();
-            });
+            // 2 lubang di sisi kiri
+            ctx.beginPath();
+            ctx.arc(tCoord.x + 7, holeY1, holeRadius, 0, Math.PI * 2);
+            ctx.arc(tCoord.x + 7, holeY2, holeRadius, 0, Math.PI * 2);
+            ctx.fill();
 
-            // 4 lubang di sisi kanan (2 kolom x 2 baris)
-            [5, 12].forEach(dx => {
-                const hx = tCoord.x + tCoord.w - 18 + dx;
-                ctx.beginPath();
-                ctx.arc(hx, holeY1, holeRadius, 0, Math.PI * 2);
-                ctx.arc(hx, holeY2, holeRadius, 0, Math.PI * 2);
-                ctx.fill();
-            });
+            // 2 lubang di sisi kanan
+            ctx.beginPath();
+            ctx.arc(tCoord.x + tCoord.w - 7, holeY1, holeRadius, 0, Math.PI * 2);
+            ctx.arc(tCoord.x + tCoord.w - 7, holeY2, holeRadius, 0, Math.PI * 2);
+            ctx.fill();
 
             // 3. VAV Damper Opening Badge di Tengah (Bebas Tabrakan)
-            const badgeW = 44;
-            const badgeH = 14;
-            const badgeX = tCoord.x + (tCoord.w - badgeW) / 2;
-            const badgeY = tCoord.y + (tCoord.h - badgeH) / 2;
+            const badgeW = Math.min(46, tCoord.w - 22);
+            const badgeH = 18;
+            const badgeX = Math.round(tCoord.x + (tCoord.w - badgeW) / 2);
+            const badgeY = Math.round(tCoord.y + (tCoord.h - badgeH) / 2);
 
             ctx.fillStyle = isTarget ? '#EEFAEA' : '#EDF2F7';
             this.drawRoundedRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
             ctx.fill();
 
-            ctx.strokeStyle = isTarget ? 'rgba(161, 230, 136, 0.8)' : 'rgba(203, 213, 225, 0.8)';
+            ctx.strokeStyle = isTarget ? 'rgba(161, 230, 136, 0.9)' : 'rgba(203, 213, 225, 0.9)';
             ctx.lineWidth = 1;
             this.drawRoundedRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
             ctx.stroke();
 
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = isTarget ? '#123B0A' : '#1E293B';
-            ctx.font = '800 7.5px "JetBrains Mono"';
+            ctx.font = '800 8.5px "JetBrains Mono", monospace';
             ctx.textAlign = 'center';
-            ctx.fillText(`VAV ${rack.damperOpening.toFixed(0)}%`, badgeX + badgeW / 2, badgeY + 10);
+            ctx.fillText(`VAV ${rack.damperOpening.toFixed(0)}%`, Math.round(badgeX + badgeW / 2), Math.round(badgeY + badgeH / 2));
 
             ctx.restore();
         }
@@ -1175,7 +1235,7 @@ class ThermoGuardApp {
 
             ctx.strokeStyle = '#A1E688';
             ctx.lineWidth = 2.0;
-            this.drawRoundedRect(ctx, tCoord.x - 1.5, tCoord.y - 1.5, tCoord.w + 3, tCoord.h + 3, 5);
+            this.drawRoundedRect(ctx, tCoord.x - 2, tCoord.y - 2, tCoord.w + 4, tCoord.h + 4, 5);
             ctx.stroke();
 
             ctx.restore();
@@ -1187,14 +1247,14 @@ class ThermoGuardApp {
      */
     drawCFDStreamlines() {
         const ctx = this.ctx;
-        const acX = 106;
+        const acX = 100;
 
         [0, 1, 2, 3].forEach(col => {
             const tCoordA = this.getTileCoordinates(col);
             const tCoordB = this.getTileCoordinates(col + 4);
             const rackA = this.physics.racks[col];
             const rackB = this.physics.racks[col + 4];
-            const targetX = tCoordA.x + tCoordA.w / 2;
+            const targetX = Math.round(tCoordA.x + tCoordA.w / 2);
             const isTarget = (this.physics.mode === 'ai' && (
                 rackA?.isAIPriority || rackB?.isAIPriority || 
                 (rackA && rackA.temp >= 25.0) || (rackB && rackB.temp >= 25.0) || 
@@ -1202,7 +1262,7 @@ class ThermoGuardApp {
             ));
 
             ctx.save();
-            const flowGrad = ctx.createLinearGradient(acX, 245, targetX, 245);
+            const flowGrad = ctx.createLinearGradient(acX, 250, targetX, 250);
             flowGrad.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
             flowGrad.addColorStop(1, isTarget ? 'rgba(161, 230, 136, 0.45)' : 'rgba(175, 110, 255, 0.25)');
 
@@ -1211,15 +1271,15 @@ class ThermoGuardApp {
 
             // Horizontal underfloor plenum conduit flow
             ctx.beginPath();
-            ctx.moveTo(acX, 245);
-            ctx.lineTo(targetX, 245);
+            ctx.moveTo(acX, 250);
+            ctx.lineTo(targetX, 250);
             ctx.stroke();
 
             // Branch lines ke ubin lantai
             ctx.beginPath();
-            ctx.moveTo(targetX, 245);
+            ctx.moveTo(targetX, 250);
             ctx.lineTo(targetX, tCoordB.y + tCoordB.h);
-            ctx.moveTo(targetX, 245);
+            ctx.moveTo(targetX, 250);
             ctx.lineTo(targetX, tCoordA.y);
             ctx.stroke();
 
@@ -1246,16 +1306,16 @@ class ThermoGuardApp {
             // Penyerapan partikel saat memasuki sasis server intake
             let absorbed = false;
             if (p.isRowA) {
-                if (p.y >= 308) {
+                if (p.y >= 312) {
                     p.alpha *= 0.72;
                     p.length *= 0.80;
-                    if (p.alpha < 0.08 || p.y >= 320) absorbed = true;
+                    if (p.alpha < 0.08 || p.y >= 324) absorbed = true;
                 }
             } else {
-                if (p.y <= 182) {
+                if (p.y <= 188) {
                     p.alpha *= 0.72;
                     p.length *= 0.80;
-                    if (p.alpha < 0.08 || p.y <= 170) absorbed = true;
+                    if (p.alpha < 0.08 || p.y <= 176) absorbed = true;
                 }
             }
 
@@ -1361,9 +1421,9 @@ class ThermoGuardApp {
 
             // 1. Enclosure Card Frame (Enterprise DCIM Monitoring Card)
             ctx.save();
-            ctx.shadowColor = isSelected ? 'rgba(175, 110, 255, 0.40)' : (isTarget ? 'rgba(161, 230, 136, 0.35)' : 'rgba(24, 26, 26, 0.10)');
+            ctx.shadowColor = isSelected ? 'rgba(175, 110, 255, 0.40)' : (isTarget ? 'rgba(161, 230, 136, 0.35)' : 'rgba(24, 26, 26, 0.08)');
             ctx.shadowBlur = isSelected ? 16 : (isTarget ? 14 : 8);
-            ctx.shadowOffsetY = 4;
+            ctx.shadowOffsetY = 3;
 
             // Chassis Background
             ctx.fillStyle = '#FFFFFF';
@@ -1373,107 +1433,111 @@ class ThermoGuardApp {
 
             // Card Outer Border
             ctx.strokeStyle = isSelected ? '#AF6EFF' : (isTarget ? '#A1E688' : '#2A2E39');
-            ctx.lineWidth = isSelected ? 2.5 : (isTarget ? 2.2 : 1.4);
+            ctx.lineWidth = isSelected ? 2.4 : (isTarget ? 2.0 : 1.3);
             this.drawRoundedRect(ctx, rx, ry, rw, rh, 8);
             ctx.stroke();
 
             // ═══════════════════════════════════════════════════════════════
-            // 1. INDIKATOR NAMA RAK
+            // 1. INDIKATOR NAMA RAK (Header Box: ry + 5, h: 24)
             // ═══════════════════════════════════════════════════════════════
-            const headerY = ry + 6;
+            const headerY = ry + 5;
             const headerH = 24;
             ctx.fillStyle = '#181A1A';
-            this.drawRoundedRect(ctx, rx + 5, headerY, rw - 10, headerH, 6);
+            this.drawRoundedRect(ctx, rx + 5, headerY, rw - 10, headerH, 5);
             ctx.fill();
 
             // Active Status LED Dot
             ctx.fillStyle = isTarget ? '#A1E688' : '#AF6EFF';
             ctx.beginPath();
-            ctx.arc(rx + 14, headerY + headerH / 2, 2.5, 0, Math.PI * 2);
+            ctx.arc(rx + 14, headerY + 12, 2.5, 0, Math.PI * 2);
             ctx.fill();
 
             // Nama Rak
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = '#FFFFFF';
-            ctx.font = '700 9px "Space Grotesk", sans-serif';
+            ctx.font = '700 11px "Space Grotesk", sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(rack.name, rx + rw / 2 + 4, headerY + 15.5);
+            ctx.fillText(rack.name, Math.round(rx + rw / 2 + 5), headerY + 12);
 
             // ═══════════════════════════════════════════════════════════════
-            // 2. INDIKATOR SUHU (TEMPERATURE)
+            // 2. INDIKATOR SUHU (Temperature Box: ry + 34, h: 46)
             // ═══════════════════════════════════════════════════════════════
-            const tempY = ry + 36;
-            const tempH = 40;
+            const tempY = ry + 34;
+            const tempH = 46;
             const temp = rack.temp;
             let tempColor, pillBg, pillBorder, statusLabel;
             if (temp < 24.5) {
-                tempColor = '#123B0A';
-                pillBg = '#EEFAEA';
-                pillBorder = '#A1E688';
+                tempColor = '#15803D';
+                pillBg = '#F0FDF4';
+                pillBorder = '#BBF7D0';
                 statusLabel = 'OPTIMAL';
             } else if (temp < 30.0) {
-                tempColor = '#92400E';
-                pillBg = '#FFF7EC';
-                pillBorder = '#FFC46D';
+                tempColor = '#B45309';
+                pillBg = '#FFFBEB';
+                pillBorder = '#FDE68A';
                 statusLabel = 'ELEVATED';
             } else {
-                tempColor = '#9F1239';
-                pillBg = '#FFE4E6';
-                pillBorder = '#F43F5E';
+                tempColor = '#DC2626';
+                pillBg = '#FEF2F2';
+                pillBorder = '#FECACA';
                 statusLabel = 'CRITICAL';
             }
 
             ctx.fillStyle = pillBg;
-            this.drawRoundedRect(ctx, rx + 6, tempY, rw - 12, tempH, 6);
+            this.drawRoundedRect(ctx, rx + 5, tempY, rw - 10, tempH, 6);
             ctx.fill();
             ctx.strokeStyle = pillBorder;
             ctx.lineWidth = 1.2;
-            this.drawRoundedRect(ctx, rx + 6, tempY, rw - 12, tempH, 6);
+            this.drawRoundedRect(ctx, rx + 5, tempY, rw - 10, tempH, 6);
             ctx.stroke();
 
             // Label SUHU
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = tempColor;
-            ctx.font = '700 6.5px "JetBrains Mono"';
+            ctx.font = '700 8px "JetBrains Mono", monospace';
             ctx.textAlign = 'center';
-            ctx.fillText(`SUHU • ${statusLabel}`, rx + rw / 2, tempY + 12);
+            ctx.fillText(`SUHU • ${statusLabel}`, Math.round(rx + rw / 2), tempY + 14);
 
             // Angka Suhu Besar & Jelas
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = tempColor;
-            ctx.font = '800 13px "JetBrains Mono"';
+            ctx.font = '800 16px "JetBrains Mono", monospace';
             ctx.textAlign = 'center';
-            ctx.fillText(`${temp.toFixed(1)}°C`, rx + rw / 2, tempY + 30);
+            ctx.fillText(`${temp.toFixed(1)}°C`, Math.round(rx + rw / 2), tempY + 32);
 
             // ═══════════════════════════════════════════════════════════════
-            // 3. INDIKATOR KECEPATAN KIPAS (FAN SPEED)
+            // 3. INDIKATOR KECEPATAN KIPAS (Fan Box: ry + 85, h: 60)
             // ═══════════════════════════════════════════════════════════════
-            const fanY = ry + 82;
-            const fanH = 48;
+            const fanY = ry + 85;
+            const fanH = 60;
             ctx.fillStyle = '#F8FAFC';
-            this.drawRoundedRect(ctx, rx + 6, fanY, rw - 12, fanH, 6);
+            this.drawRoundedRect(ctx, rx + 5, fanY, rw - 10, fanH, 6);
             ctx.fill();
             ctx.strokeStyle = 'rgba(24, 26, 26, 0.08)';
             ctx.lineWidth = 1;
-            this.drawRoundedRect(ctx, rx + 6, fanY, rw - 12, fanH, 6);
+            this.drawRoundedRect(ctx, rx + 5, fanY, rw - 10, fanH, 6);
             ctx.stroke();
 
             // Label KIPAS
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = '#64748B';
-            ctx.font = '700 6.5px "JetBrains Mono"';
+            ctx.font = '700 7.5px "JetBrains Mono", monospace';
             ctx.textAlign = 'center';
-            ctx.fillText('KECEPATAN KIPAS', rx + rw / 2, fanY + 11);
+            ctx.fillText('KECEPATAN KIPAS', Math.round(rx + rw / 2), fanY + 11);
 
             // Speedometer Arc Gauge
-            const arcCx = rx + rw / 2;
-            const arcCy = fanY + 27;
-            const arcR = 12.5;
+            const arcCx = Math.round(rx + rw / 2);
+            const arcCy = fanY + 30;
+            const arcR = 10.5;
 
             // Track latar belakang abu-abu
             ctx.strokeStyle = '#E2E8F0';
-            ctx.lineWidth = 2.6;
+            ctx.lineWidth = 2.4;
             ctx.beginPath();
             ctx.arc(arcCx, arcCy, arcR, Math.PI * 0.75, Math.PI * 2.25);
             ctx.stroke();
 
-            // Busur aktif kecepatan kipas (Warna dinamis mencerminkan akselerasi pendinginan)
+            // Busur aktif kecepatan kipas
             const fanRatio = Math.max(0.08, Math.min(1.0, rack.fanPWM / 100.0));
             const arcEnd = Math.PI * 0.75 + fanRatio * (Math.PI * 1.5);
             
@@ -1487,13 +1551,12 @@ class ThermoGuardApp {
             }
 
             ctx.strokeStyle = arcColor;
-            ctx.lineWidth = (fanRatio >= 0.70) ? 3.0 : 2.6;
+            ctx.lineWidth = (fanRatio >= 0.70) ? 2.8 : 2.4;
             ctx.beginPath();
             ctx.arc(arcCx, arcCy, arcR, Math.PI * 0.75, arcEnd);
             ctx.stroke();
 
-            // 🌀 ROTOR KIPAS BERPUTAR REAL-TIME (Animasi Kecepatan Putaran Fisik)
-            // Kecepatan putar rotor langsung proporsional terhadap fanPWM & laju pendinginan
+            // 🌀 ROTOR KIPAS BERPUTAR REAL-TIME
             rack.rotorAngle = (rack.rotorAngle || 0) + (fanRatio * 0.50);
             ctx.save();
             ctx.translate(arcCx, arcCy);
@@ -1503,35 +1566,36 @@ class ThermoGuardApp {
                 ctx.rotate(Math.PI / 2);
                 ctx.fillStyle = bladeColor;
                 ctx.beginPath();
-                ctx.ellipse(0, 4.0, 1.4, 3.2, 0, 0, Math.PI * 2);
+                ctx.ellipse(0, 3.8, 1.3, 3.0, 0, 0, Math.PI * 2);
                 ctx.fill();
             }
             // Center Hub
             ctx.fillStyle = '#181A1A';
             ctx.beginPath();
-            ctx.arc(0, 0, 2.2, 0, Math.PI * 2);
+            ctx.arc(0, 0, 2.0, 0, Math.PI * 2);
             ctx.fill();
             ctx.restore();
 
-            // Angka RPM Kipas (Dengan Label Indikator Akselerasi)
+            // Angka RPM Kipas
             const rpmVal = Math.round(rack.fanPWM * 142);
             const isHighSpeed = (fanRatio >= 0.65);
             const isEmergency = (fanRatio >= 0.85);
 
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = isEmergency ? '#9F1239' : (isHighSpeed ? '#15803D' : '#181A1A');
-            ctx.font = '800 8.5px "JetBrains Mono"';
+            ctx.font = '800 9px "JetBrains Mono", monospace';
             ctx.textAlign = 'center';
 
             let rpmText = `${(rpmVal / 1000).toFixed(1)}k RPM`;
             if (isEmergency) rpmText += ' 🔥';
             else if (isHighSpeed) rpmText += ' ⚡';
-            ctx.fillText(rpmText, rx + rw / 2, fanY + 44);
+            ctx.fillText(rpmText, Math.round(rx + rw / 2), fanY + 49);
 
             // Target Lock Reticle jika Rak A2 & A3 di-Precool oleh AI
             if (isTarget) {
                 ctx.save();
                 ctx.strokeStyle = '#A1E688';
-                ctx.lineWidth = 2.2;
+                ctx.lineWidth = 2.0;
 
                 const bSize = 8;
                 ctx.beginPath();
